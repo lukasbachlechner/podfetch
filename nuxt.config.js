@@ -11,7 +11,7 @@ export default {
   },
 
   // Register serverMiddleware
-  serverMiddleware: ['~/api/build/'],
+  serverMiddleware: ['~/api/dist/'],
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: ['~/assets/base.css'],
