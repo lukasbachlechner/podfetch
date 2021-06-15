@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "nuxt --hostname '0' --port 80 & tsc --watch",
-    "build": "tsc && nuxt build",
+    "build": "nuxt build",
+    "vercel-build": "tsc",
     "start": "nuxt start",
     "generate": "nuxt generate",
     "lint:js": "eslint --ext \".js,.vue\" --ignore-path .gitignore .",
