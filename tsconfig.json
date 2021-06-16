@@ -4,6 +4,7 @@
     "outDir": "./api/dist",
     "rootDir": "./api",
     "noImplicitAny": true,
+    "typeRoots": ["node_modules/@types"]
   },
   "include": ["./api/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts"]
