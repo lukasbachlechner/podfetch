@@ -10,14 +10,11 @@ export default {
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
 
-  // Register serverMiddleware
-  serverMiddleware: ['~/api/dist/'],
-
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: ['~/assets/base.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: ['~/plugins/api.js', '~/plugins/formatter.js'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -28,7 +25,13 @@ export default {
     '@nuxtjs/eslint-module',
     // https://go.nuxtjs.dev/tailwindcss
     '@nuxtjs/tailwindcss',
+    '@nuxtjs/svg',
+    '@nuxtjs/svg-sprite',
   ],
+
+  svgSprite: {
+    input: 'node_modules/bootstrap-icons/icons',
+  },
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [

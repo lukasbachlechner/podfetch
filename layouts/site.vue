@@ -1,8 +1,10 @@
 <template>
-  <div class="bg-haiti-400 text-white">
-    <main class="bg-haiti-500">
+  <div class="min-h-screen">
+    <site-header />
+    <main>
       <Nuxt />
     </main>
+    <site-footer />
   </div>
 </template>
 
@@ -10,4 +12,12 @@
 export default {};
 </script>
 
-<style scoped></style>
+<style>
+.h2 {
+  @apply text-3xl md:text-4xl text-center font-bold;
+}
+
+.section {
+  @apply mt-24 mb-48;
+}
+</style>
