@@ -7,11 +7,17 @@
       'button--default': type === '',
       'button--link': type === 'link',
       'button--ghost': type === 'ghost',
+      'button--full-width': fullWidth,
+      'button--disabled': disabled,
     }"
+    :disabled="disabled"
     @click="$emit('click', $event)"
   >
-    <span>
+    <span v-show="!loading">
       <slot></slot>
+    </span>
+    <span v-show="loading">
+      <loading-spinner />
     </span>
   </component>
 </template>
@@ -34,6 +40,21 @@ export default {
       required: false,
       default: '',
     },
+    fullWidth: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 };
 </script>
@@ -48,7 +69,15 @@ export default {
   @apply bg-gradient-to-tr from-accent to-accent-middle;
 }
 
+.button--full-width {
+  @apply flex w-full;
+}
+
 .button--link {
   @apply bg-transparent hover:underline;
+}
+
+.button--disabled {
+  @apply opacity-25 cursor-not-allowed;
 }
 </style>

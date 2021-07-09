@@ -1,5 +1,6 @@
 // const plugin = require('tailwindcss/plugin');
 const defaultTheme = require('tailwindcss/defaultTheme');
+const plugin = require('tailwindcss/plugin');
 
 module.exports = {
   mode: process.env.NODE_ENV === 'production' ? 'jit' : undefined,
@@ -34,8 +35,31 @@ module.exports = {
           middle: '#151039',
           high: '#191345',
         },
+        error: {
+          DEFAULT: '#ff0000',
+        },
+        success: {
+          DEFAULT: '#00ff00',
+        },
+      },
+      screens: {
+        'max-md': { max: '767px' },
       },
     },
   },
-  plugins: [require('@tailwindcss/forms')],
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/aspect-ratio'),
+    require('@tailwindcss/line-clamp'),
+    plugin(({ addComponents }) => {
+      const newComponents = {
+        '.ellipsis': {
+          textOverflow: 'ellipsis',
+          whiteSpace: 'noWrap',
+          overflow: 'hidden',
+        },
+      };
+      addComponents(newComponents);
+    }),
+  ],
 };

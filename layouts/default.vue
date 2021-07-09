@@ -1,16 +1,29 @@
 <template>
-  <div class="bg-haiti-middle text-white">
-    <div class="fixed left-0 top-0 w-64 h-screen">Left</div>
-    <main class="bg-haiti ml-64 min-h-screen">
-      <h1 class="text-3xl font-bold">Podfetch</h1>
-      <Nuxt />
+  <div class="text-white">
+    <nav-wrapper />
+    <main class="content">
+      <Nuxt keep-alive />
+      <loading-screen v-if="isLoading" />
     </main>
-    <div class="layout__player">Player</div>
   </div>
 </template>
 
+<script>
+import { mapGetters } from 'vuex';
+
+export default {
+  computed: {
+    ...mapGetters({
+      isLoading: 'loading/isLoading',
+    }),
+  },
+};
+</script>
+
 <style>
-.layout__player {
-  @apply p-4 bg-haiti-high fixed bottom-0 left-0 w-screen h-20;
+.content {
+  @apply bg-haiti min-h-screen p-4 pt-6;
+  @apply md:ml-20 md:p-8 md:pr-0 md:pt-9;
+  @apply lg:ml-64;
 }
 </style>

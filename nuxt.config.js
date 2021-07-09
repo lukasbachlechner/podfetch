@@ -10,11 +10,20 @@ export default {
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
 
+  publicRuntimeConfig: {
+    apiUrl: process.env.API_URL,
+  },
+
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: ['~/assets/base.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ['~/plugins/api.js', '~/plugins/formatter.js'],
+  plugins: [
+    '~/plugins/api.js',
+    '~/plugins/formatter.js',
+    '~/plugins/swiper.js',
+    '~/plugins/vee-validate.client.js',
+  ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,

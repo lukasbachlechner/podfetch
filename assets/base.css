@@ -12,5 +12,18 @@ body {
   @apply bg-haiti text-white;
 }
 
+.title {
+  @apply text-4xl font-black mb-6;
+}
 
+.h2 {
+  @apply text-2xl font-bold mb-6;
+}
 
+.section {
+  @apply mb-48;
+}
+
+.page {
+  @apply md:pr-8;
+}
