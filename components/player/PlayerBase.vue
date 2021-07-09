@@ -159,7 +159,7 @@ export default {
     setCurrentTime(value) {
       const { player, playerTrack } = this.$refs;
 
-      value = value ?? player.currentTime;
+      value = value || player.currentTime;
 
       const roundedValue = Math.round(value);
       const roundedCurrentTime = Math.round(player.currentTime);
