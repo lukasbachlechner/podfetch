@@ -24,6 +24,12 @@
         <ui-icon name="play-fill" size="24" class="ml-1" />
       </button>
     </div>
+    <nuxt-link
+      :to="`/episode/${episode.titleSlug}/${episode.id}`"
+      class="episode__link"
+    >
+      <span class="sr-only">To Episode</span></nuxt-link
+    >
   </li>
 </template>
 
@@ -46,15 +52,15 @@ export default {
 
 <style scoped>
 .episode__item {
-  @apply p-4 rounded bg-haiti-middle;
+  @apply p-4 rounded bg-haiti-middle mb-4 relative hover:bg-haiti-high;
 }
 
 .episode__image {
-  @apply w-12 h-12 flex-shrink-0;
+  @apply w-12 h-12 flex-shrink-0 mr-4;
 }
 
 .episode__header {
-  @apply flex items-center font-bold gap-4 mb-4;
+  @apply flex items-center font-bold mb-4;
 }
 
 .episode__description {
@@ -66,6 +72,10 @@ export default {
 }
 
 .episode__play-button {
-  @apply rounded-full bg-white bg-opacity-10 w-12 h-12 flex items-center justify-center;
+  @apply rounded-full bg-white bg-opacity-10 w-12 h-12 flex items-center justify-center relative z-20;
+}
+
+.episode__link {
+  @apply absolute top-0 left-0  z-10 w-full h-full;
 }
 </style>

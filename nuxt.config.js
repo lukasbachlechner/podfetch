@@ -1,7 +1,8 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'podfetch',
+    title: 'Loading... ',
+    titleTemplate: '%s – Podfetch',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -19,7 +20,6 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    '~/plugins/api.js',
     '~/plugins/formatter.js',
     '~/plugins/swiper.js',
     '~/plugins/vee-validate.client.js',
@@ -35,12 +35,7 @@ export default {
     // https://go.nuxtjs.dev/tailwindcss
     '@nuxtjs/tailwindcss',
     '@nuxtjs/svg',
-    '@nuxtjs/svg-sprite',
   ],
-
-  svgSprite: {
-    input: 'node_modules/bootstrap-icons/icons',
-  },
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
@@ -48,10 +43,45 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
+    '@nuxtjs/auth-next',
   ],
 
+  auth: {
+    plugins: ['~/plugins/api.js'],
+    strategies: {
+      local: {
+        user: {
+          property: false,
+          autoFetch: false,
+        },
+        token: {
+          property: 'token',
+        },
+        endpoints: {
+          login: {
+            baseUrl: process.env.API_URL,
+            url: 'auth/login',
+            method: 'post',
+          },
+          logout: {
+            baseUrl: process.env.API_URL,
+            url: 'auth/logout',
+            method: 'post',
+          },
+          user: {
+            baseUrl: process.env.API_URL,
+            url: 'auth/me',
+            method: 'get',
+          },
+        },
+      },
+    },
+  },
+
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
-  axios: {},
+  axios: {
+    progress: false,
+  },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {

@@ -1,13 +1,13 @@
 <template>
-  <section class="fullscreen__container">
-    <div class="fullscreen__cols-center">
+  <section class="auth__section">
+    <div class="">
       <div>
-        <h2 class="h2">Create Your Account</h2>
+        <h2 class="title">Create Your Account</h2>
         <p class="muted">
           Enter your details below to start your listening experience.
         </p>
       </div>
-      <div class="mt-16">
+      <div class="mt-8">
         <auth-signup-form />
       </div>
     </div>
@@ -15,9 +15,7 @@
 </template>
 
 <script>
-export default {
-  layout: 'fullscreen',
-};
+export default {};
 </script>
 
 <style scoped></style>

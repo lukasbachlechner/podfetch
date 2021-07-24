@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="title">Home</h1>
+    <page-header title="Home" />
     <section class="section">
       <h2 class="h2">Trending</h2>
       <podcast-list :podcasts="trendingPodcasts" />

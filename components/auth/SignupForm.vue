@@ -37,7 +37,7 @@
 
       <ui-button
         full-width
-        class="mt-16"
+        class="mt-8"
         :disabled="invalid || email.taken"
         :loading="isLoading"
         >Sign Up</ui-button
@@ -63,20 +63,37 @@ export default {
     form: {
       email: '',
       password: '',
-      passwordRepeat: '',
+      passwordConfirmation: '',
     },
   }),
 
   methods: {
-    onSubmit() {
+    async onSubmit() {
       this.isLoading = true;
+      this.errors = [];
 
-      setTimeout(() => {
+      const { email, password, passwordConfirmation } = this.form;
+
+      try {
+        const user = await this.$api.register(
+          email,
+          password,
+          passwordConfirmation
+        );
+
+        if (user) {
+          const { data } = await this.$auth.loginWith('local', {
+            data: { email, password },
+          });
+          this.$auth.setUser(data.user);
+        }
+      } catch (e) {
+        this.errors = e.response.data.errors;
+      } finally {
         this.isLoading = false;
-      }, 3000);
+      }
     },
-    checkEmail(isInvalid) {
-      console.log(isInvalid);
+    async checkEmail(isInvalid) {
       if (isInvalid) {
         return false;
       }
@@ -85,15 +102,23 @@ export default {
       this.email.taken = false;
       this.email.checkLoading = true;
 
-      setTimeout(() => {
+      try {
+        const { isTaken } = await this.$api.checkEmail(this.form.email);
+
         this.email.checked = true;
-        this.email.taken = false;
+        this.email.taken = isTaken;
         this.email.checkLoading = false;
-      }, 1000);
+      } catch (e) {
+        this.errors = e.response.data.errors;
+      } finally {
+        this.isLoading = false;
+      }
+
+      setTimeout(() => {}, 1000);
     },
     handlePasswordChange({ password, repeatPassword }) {
       this.form.password = password;
-      this.form.passwordRepeat = repeatPassword;
+      this.form.passwordConfirmation = repeatPassword;
     },
   },
 };

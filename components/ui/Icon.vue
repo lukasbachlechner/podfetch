@@ -18,9 +18,18 @@ export default {
   },
   computed: {
     iconLink() {
-      let icon = require(`/node_modules/bootstrap-icons/icons/${this.name}.svg?raw`);
-      icon = icon.replace(/(width|height)="([\d]{2})"/g, `$1="${this.size}"`);
-      return icon;
+      try {
+        let icon = require(`@/assets/icons/${this.name}.svg?raw`);
+        icon = icon.replace(/(width|height)="([\d]{2})"/g, `$1="${this.size}"`);
+        icon = icon.replace(
+          /#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})/g,
+          'currentColor'
+        );
+        return icon;
+      } catch (e) {
+        console.log(e.message);
+        return '';
+      }
     },
   },
 };

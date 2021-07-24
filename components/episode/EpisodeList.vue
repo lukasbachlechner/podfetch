@@ -21,6 +21,6 @@ export default {
 
 <style scoped>
 .episode__list {
-  @apply flex flex-col gap-4;
+  @apply flex flex-col;
 }
 </style>

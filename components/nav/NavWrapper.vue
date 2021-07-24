@@ -1,8 +1,8 @@
 <template>
   <div class="nav__wrapper">
-    <div class="nav__logo-wrapper">
+    <nuxt-link to="/" class="nav__logo-wrapper">
       <logomark class="nav__logo" />
-    </div>
+    </nuxt-link>
     <player-base />
     <nav-list />
   </div>

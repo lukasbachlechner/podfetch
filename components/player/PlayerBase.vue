@@ -25,16 +25,29 @@
         }}</nuxt-link>
       </div>
 
-      <player-controls @toggle-playback="toggleAudio" />
+      <player-controls
+        @toggle-playback="toggleAudio"
+        @skip-forward="handleSkipForward"
+        @skip-backward="handleSkipBackward"
+      />
       <player-track
         :max="duration"
         @track-input="handleRangeInput"
         @track-change="handleRangeChange"
         ref="playerTrack"
       />
-      <player-actions />
+      <player-actions
+        @download-episode="
+          $store.dispatch('downloader/downloadEpisode', currentEpisode)
+        "
+      />
 
+      <!--
+      the audio element has to have autoplay enabled (safari ios issue)
+      so that the loadeddata-event gets fired when it should :D
+       -->
       <audio
+        autoplay
         :src="currentEpisode.audioUrl"
         ref="player"
         class="hidden"
@@ -64,6 +77,12 @@ export default {
       playerOpen: 'player/mobilePlayerOpen',
       hasEpisode: 'player/hasEpisode',
     }),
+    isSafariIOS() {
+      const isSafari = !!navigator.userAgent.match(/Version\/[\d.]+.*Safari/);
+      const isIOS =
+        /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      return isSafari && isIOS;
+    },
   },
   mounted() {
     const lastPlayedEpisode = JSON.parse(
@@ -103,11 +122,6 @@ export default {
     },
     stopInterval() {
       clearInterval(this.interval);
-    },
-    whilePlaying() {
-      const { player } = this.$refs;
-
-      this.setCurrentTime(player.currentTime);
     },
     toggleAudio() {
       const { player } = this.$refs;
@@ -159,11 +173,11 @@ export default {
     setCurrentTime(value) {
       const { player, playerTrack } = this.$refs;
 
-      value = value || player.currentTime;
+      value = value ?? player?.currentTime;
 
       const roundedValue = Math.round(value);
-      const roundedCurrentTime = Math.round(player.currentTime);
-      playerTrack.setValue(roundedValue);
+      const roundedCurrentTime = Math.round(player?.currentTime);
+      playerTrack?.setValue(roundedValue);
 
       if (roundedValue !== roundedCurrentTime) {
         player.currentTime = roundedValue;
@@ -171,23 +185,36 @@ export default {
       this.$store.commit('player/SET_CURRENT_TIME', roundedValue);
       localStorage.setItem('lastPlaybackTime', roundedValue);
     },
+    handleSkipForward() {
+      const { player } = this.$refs;
+      const { currentTime } = player;
+
+      this.setCurrentTime(currentTime + 15);
+    },
+
+    handleSkipBackward() {
+      const { player } = this.$refs;
+      const { currentTime } = player;
+
+      this.setCurrentTime(currentTime - 15);
+    },
   },
 };
 </script>
 
 <style scoped>
 .player__wrapper {
-  @apply w-full bg-haiti-high px-4 py-3 flex items-center gap-4 relative;
+  @apply w-full bg-haiti-high px-4 py-3 flex items-center relative select-none;
   @apply md:fixed md:bottom-0 md:left-0;
 }
 
 .player__image {
-  @apply w-14 h-14 rounded bg-white flex-shrink-0;
+  @apply w-14 h-14 rounded bg-white flex-shrink-0 mr-4;
 }
 
 .player__info {
   @apply flex flex-col overflow-hidden relative z-10;
-  @apply md:w-36;
+  @apply md:w-36 md:mr-4;
 }
 
 .player__episode {
@@ -229,11 +256,11 @@ export default {
   }
 
   .player--open >>> .player__track {
-    @apply flex w-full  flex-wrap justify-between flex-grow-0 my-4;
+    @apply flex w-full flex-wrap justify-between flex-grow-0 my-4;
   }
 
   .player--open >>> .player__track-time {
-    @apply order-2;
+    @apply order-2 mt-4;
   }
 
   .player--open >>> .player__controls {

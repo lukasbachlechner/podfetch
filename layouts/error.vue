@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="error.statusCode === 404">
-      <h1 class="title">Whoops!</h1>
+      <page-header title="Whoops!" />
       <p class="mb-16">Sorry, we couldn't find what you were looking for.</p>
       <nuxt-link to="/">Back to home</nuxt-link>
     </div>

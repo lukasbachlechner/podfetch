@@ -7,6 +7,7 @@
       'button--default': type === '',
       'button--link': type === 'link',
       'button--ghost': type === 'ghost',
+      'button--outline': type === 'outline',
       'button--full-width': fullWidth,
       'button--disabled': disabled,
     }"
@@ -19,6 +20,7 @@
     <span v-show="loading">
       <loading-spinner />
     </span>
+    <ui-icon :name="icon" v-if="icon" class="button__icon" size="16" />
   </component>
 </template>
 
@@ -55,6 +57,11 @@ export default {
       required: false,
       default: false,
     },
+    icon: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
 };
 </script>
@@ -77,7 +84,15 @@ export default {
   @apply bg-transparent hover:underline;
 }
 
+.button--outline {
+  @apply bg-transparent border;
+}
+
 .button--disabled {
   @apply opacity-25 cursor-not-allowed;
+}
+
+.button__icon {
+  @apply ml-2;
 }
 </style>

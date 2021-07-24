@@ -61,11 +61,13 @@ export default {
 
 <style scoped>
 .player__track {
-  @apply gap-4 items-center flex-grow hidden md:flex;
+  @apply items-center flex-grow hidden;
+  @apply md:ml-8 md:flex;
 }
 
 .player__track-input {
   @apply bg-white bg-opacity-10 appearance-none outline-none w-full h-1 relative cursor-pointer;
+  @apply md:mx-4;
 }
 
 .player__track-input::before {

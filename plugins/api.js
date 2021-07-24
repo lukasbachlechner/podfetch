@@ -6,6 +6,22 @@ export default function ({ $axios, $config }, inject) {
       });
     }
 
+    register(email, password, passwordConfirmation) {
+      return this.client.$post('auth/register', {
+        email,
+        password,
+        passwordConfirmation,
+      });
+    }
+
+    checkEmail(email) {
+      return this.client.$get('auth/check-email', {
+        params: {
+          email,
+        },
+      });
+    }
+
     getStats() {
       return this.client.$get('stats');
     }
@@ -23,6 +39,22 @@ export default function ({ $axios, $config }, inject) {
         params: {
           page,
           per_page: perPage,
+        },
+      });
+    }
+
+    getEpisodeById(id) {
+      return this.client.$get('episodes/' + id);
+    }
+
+    getCategories() {
+      return this.client.$get('categories');
+    }
+
+    search(term) {
+      return this.client.$get('search', {
+        params: {
+          q: term,
         },
       });
     }

@@ -83,6 +83,7 @@ export default {
 
 <style scoped>
 .signup__password-helper {
-  @apply grid grid-cols-2 text-sm mt-2 list-disc list-inside;
+  @apply grid text-sm mt-2 list-disc list-inside;
+  @apply sm:grid-cols-2;
 }
 </style>

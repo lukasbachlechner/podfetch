@@ -22,8 +22,12 @@ export default {
 
 <style>
 .content {
-  @apply bg-haiti min-h-screen p-4 pt-6;
-  @apply md:ml-20 md:p-8 md:pr-0 md:pt-9;
+  @apply bg-haiti p-4 pt-6 mt-20;
+  @apply md:ml-22 md:p-8 md:pr-0 md:pt-9 md:mt-27;
   @apply lg:ml-64;
+}
+
+.auth__section {
+  @apply w-full max-w-xl mb-52 mx-auto;
 }
 </style>

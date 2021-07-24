@@ -1,9 +1,13 @@
 <template>
   <div>
-    <header-back />
     <div class="page" v-if="!$fetchState.pending && !$fetchState.error">
+      <page-header :title="podcast.title" back-only />
       <header class="podcast__header">
-        <ui-image :src="podcast.image" alt="" class="podcast__image" />
+        <ui-image
+          :src="podcast.image"
+          :alt="podcast.title"
+          class="podcast__image"
+        />
         <div class="podcast__title-content">
           <h1 class="podcast__title">{{ podcast.title }}</h1>
           <p>by {{ podcast.author }}</p>
@@ -108,7 +112,7 @@ export default {
 
 <style scoped>
 .podcast__header {
-  @apply flex flex-col gap-8 mb-8;
+  @apply flex flex-col mb-8;
   @apply md:flex-row md:items-end md:mt-16;
 }
 
@@ -119,7 +123,8 @@ export default {
 }
 
 .podcast__image {
-  @apply w-48 max-w-full rounded flex-shrink-0;
+  @apply w-48 h-48 max-w-full rounded flex-shrink-0 mb-8;
+  @apply md:mr-8 md:mb-0;
 }
 
 .podcast__description {
@@ -136,7 +141,7 @@ export default {
 }
 
 .podcast__content {
-  @apply flex flex-col-reverse mb-64 mt-16 gap-8;
+  @apply flex flex-col-reverse mt-16 gap-8;
   @apply md:grid md:grid-cols-3 md:mt-24;
 }
 

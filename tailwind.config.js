@@ -51,11 +51,28 @@ module.exports = {
     require('@tailwindcss/forms'),
     require('@tailwindcss/aspect-ratio'),
     require('@tailwindcss/line-clamp'),
-    plugin(({ addComponents }) => {
+    plugin(({ addComponents, addUtilities }) => {
+      const newUtilities = {
+        '.left-22': {
+          left: '5.5rem',
+        },
+        '.ml-22': {
+          marginLeft: '5.5rem',
+        },
+        '.mt-27': {
+          marginTop: '6.75rem',
+        },
+        '.h-27': {
+          height: '6.75rem',
+        },
+      };
+
+      addUtilities(newUtilities, ['responsive']);
+
       const newComponents = {
         '.ellipsis': {
           textOverflow: 'ellipsis',
-          whiteSpace: 'noWrap',
+          whiteSpace: 'nowrap',
           overflow: 'hidden',
         },
       };

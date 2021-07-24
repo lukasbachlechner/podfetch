@@ -4,6 +4,8 @@
       v-for="category in categories"
       :key="category.id"
       :category="category"
+      :has-link="hasLink"
+      v-on="$listeners"
     />
   </ul>
 </template>
@@ -15,12 +17,17 @@ export default {
       type: Array,
       required: true,
     },
+    hasLink: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
 };
 </script>
 
 <style scoped>
 .category__pill-list {
-  @apply flex gap-2 flex-wrap;
+  @apply flex flex-wrap;
 }
 </style>

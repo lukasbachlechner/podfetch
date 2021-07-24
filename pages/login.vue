@@ -1,11 +1,11 @@
 <template>
-  <section class="fullscreen__container">
-    <div class="fullscreen__cols-center">
+  <section class="auth__section">
+    <div class="">
       <div>
-        <h2 class="h2">Welcome Back!</h2>
+        <h2 class="title">Welcome Back!</h2>
         <p class="muted">Please log in.</p>
       </div>
-      <div class="mt-16">
+      <div class="mt-8">
         <auth-login-form />
       </div>
     </div>
@@ -13,9 +13,7 @@
 </template>
 
 <script>
-export default {
-  layout: 'fullscreen',
-};
+export default {};
 </script>
 
 <style scoped></style>

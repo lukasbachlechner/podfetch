@@ -7,6 +7,11 @@
       v-slot="{ invalid }"
       @submit.prevent="onSubmit"
     >
+      <ul>
+        <li v-for="(error, i) in errors" :key="i" class="mb-4">
+          <form-error>{{ error.message }}</form-error>
+        </li>
+      </ul>
       <form-group
         label="E-Mail"
         v-model="form.email"
@@ -23,7 +28,7 @@
 
       <ui-button
         full-width
-        class="mt-16"
+        class="mt-8"
         :disabled="invalid"
         :loading="isLoading"
         >Login</ui-button
@@ -46,15 +51,24 @@ export default {
       email: '',
       password: '',
     },
+    errors: [],
   }),
 
   methods: {
-    onSubmit() {
+    async onSubmit() {
       this.isLoading = true;
+      this.errors = [];
 
-      setTimeout(() => {
+      try {
+        const { data } = await this.$auth.loginWith('local', {
+          data: { ...this.form },
+        });
+        this.$auth.setUser(data.user);
+      } catch (e) {
+        this.errors = e.response.data.errors;
+      } finally {
         this.isLoading = false;
-      }, 3000);
+      }
     },
   },
 };

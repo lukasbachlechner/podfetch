@@ -3,7 +3,7 @@
     <button class="player__action-button">
       <ui-icon name="heart" />
     </button>
-    <button class="player__action-button">
+    <button class="player__action-button" @click="$emit('download-episode')">
       <ui-icon name="download" />
     </button>
   </div>
@@ -15,6 +15,10 @@ export default {};
 
 <style scoped>
 .player__actions {
-  @apply ml-8 hidden md:flex gap-4 items-center mr-8;
+  @apply ml-8 hidden md:flex items-center mr-8;
+}
+
+.player__action-button {
+  @apply md:ml-4;
 }
 </style>

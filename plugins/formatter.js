@@ -21,6 +21,14 @@ export default function (_, inject) {
       }).format(timestamp);
     }
 
+    date(timestamp) {
+      return new Intl.DateTimeFormat('en-US', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+      }).format(timestamp);
+    }
+
     /**
      * format a timestring (in seconds) to mm:ss (with minutes possibly > 60)
      * @param timeInSeconds
@@ -39,7 +47,7 @@ export default function (_, inject) {
 
     /**
      * format a timeInSeconds to a (rounded) number of minutes
-     * doesn't recognize the edge case of a exact minute (e. g. 60), but that's fine
+     * doesn't recognize the edge case of an exact minute (e. g. 60), but that's fine
      * @param timeInSeconds
      * @returns {string}
      */
@@ -47,6 +55,12 @@ export default function (_, inject) {
       const time = this.time(timeInSeconds);
       const [minutes] = time.split(':').map((part) => parseInt(part));
       return `${minutes + 1} min`;
+    }
+
+    megaBytes(bytes, digits = 2) {
+      return !isNaN(bytes)
+        ? parseFloat((bytes / (1024 * 1024)).toFixed(digits))
+        : 0;
     }
   }
   const formatter = new Formatter();
