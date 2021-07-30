@@ -7,7 +7,7 @@
       @input="handleInput"
       @change="handleChange"
       ref="track"
-      value="0"
+      :value="currentTime"
       :max="max"
       :style="trackCssVariables"
     />

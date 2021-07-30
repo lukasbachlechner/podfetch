@@ -1,5 +1,6 @@
 <template>
   <div class="text-white">
+    <notification-wrapper />
     <nav-wrapper />
     <main class="content">
       <Nuxt keep-alive />
@@ -16,6 +17,10 @@ export default {
     ...mapGetters({
       isLoading: 'loading/isLoading',
     }),
+  },
+  async mounted() {
+    await this.$store.dispatch('downloader/getAllSavedEpisodes');
+    await this.$store.dispatch('downloader/getStorageEstimate');
   },
 };
 </script>

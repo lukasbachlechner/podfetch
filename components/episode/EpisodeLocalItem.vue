@@ -10,6 +10,11 @@
       <h3 class="ellipsis">
         {{ episode.title }}
       </h3>
+
+      <button class="episode__delete-button" @click="deleteEpisode">
+        <ui-icon name="trash" />
+        <span class="sr-only">Delete this episode</span>
+      </button>
     </div>
     <p class="episode__description" v-html="episode.excerpt"></p>
     <div class="episode__footer">
@@ -43,8 +48,10 @@ export default {
   },
   methods: {
     playEpisode() {
-      // this.$store.commit('player/SET_EPISODE', this.episode);
       this.$store.dispatch('player/addEpisode', this.episode);
+    },
+    deleteEpisode() {
+      this.$store.dispatch('downloader/deleteEpisode', this.episode.id);
     },
   },
 };
@@ -77,5 +84,9 @@ export default {
 
 .episode__link {
   @apply absolute top-0 left-0 w-full h-full;
+}
+
+.episode__delete-button {
+  @apply p-2  ml-auto relative z-10;
 }
 </style>

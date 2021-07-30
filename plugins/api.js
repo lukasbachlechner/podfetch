@@ -1,9 +1,32 @@
-export default function ({ $axios, $config }, inject) {
+export default function ({ $axios, $config, $auth }, inject) {
   class ApiClient {
     constructor() {
       this.client = $axios.create({
         baseURL: $config.apiUrl,
       });
+
+      this.isOffline = false;
+
+      if (process.client && 'onLine' in navigator) {
+        this.isOffline = !navigator.onLine;
+
+        window.addEventListener('online', (e) =>
+          this.handleConnectionChange(e)
+        );
+        window.addEventListener('offline', (e) =>
+          this.handleConnectionChange(e)
+        );
+      }
+    }
+
+    handleConnectionChange({ type }) {
+      if (type === 'offline') {
+        console.info('%c[CONNECTION] You are offline.', 'color: yellow');
+        this.isOffline = true;
+      } else {
+        console.info('%c[CONNECTION] You are back online!', 'color: green');
+        this.isOffline = false;
+      }
     }
 
     register(email, password, passwordConfirmation) {
@@ -57,6 +80,41 @@ export default function ({ $axios, $config }, inject) {
           q: term,
         },
       });
+    }
+
+    async getLastPlayedEpisode() {
+      if ($auth.loggedIn && !this.isOffline) {
+        return await this.client.$get('user/last-playback');
+      } else {
+        return JSON.parse(localStorage.getItem('lastPlayback'));
+      }
+    }
+
+    setLastPlaybackTime(episodeId, episode, playbackTime = 0) {
+      if ($auth.loggedIn && !this.isOffline) {
+        const payload = {
+          token: $auth.strategy.token.get(),
+          playbackTime,
+          episodeId,
+        };
+        this.sendBeacon($config.apiUrl + 'user/last-playback-time', payload);
+      } else {
+        localStorage.setItem(
+          'lastPlayback',
+          JSON.stringify({ episode, playbackTime })
+        );
+      }
+    }
+
+    sendBeacon(url, payload) {
+      return navigator.sendBeacon(url, this.toFormData(payload));
+    }
+
+    toFormData(object) {
+      return Object.keys(object).reduce((formData, key) => {
+        formData.append(key, object[key]);
+        return formData;
+      }, new FormData());
     }
   }
   const apiClient = new ApiClient();

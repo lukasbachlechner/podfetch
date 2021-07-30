@@ -4,6 +4,8 @@ export const state = () => ({
   currentTime: null,
   currentEpisode: null,
   mobilePlayerOpen: false,
+  lastPlayedEpisodeUrl: null,
+  lastPlaybackTime: null,
 });
 
 export const mutations = {
@@ -26,25 +28,41 @@ export const mutations = {
   SET_MOBILE_PLAYER(state, open = false) {
     state.mobilePlayerOpen = open;
   },
+  SET_LAST_PLAYED_EPISODE_URL(state, episodeUrl) {
+    state.lastPlayedEpisodeUrl = episodeUrl;
+  },
+  SET_LAST_PLAYBACK_TIME(state, playbackTime) {
+    state.lastPlaybackTime = playbackTime;
+  },
 };
 
 export const actions = {
-  addEpisode({ commit }, episode) {
-    if ('mediaSession' in navigator) {
-      navigator.mediaSession.metadata = new window.MediaMetadata({
-        title: episode.title,
-        artist: episode.podcastTitle,
-        artwork: [
-          {
-            src: 'https://dummyimage.com/96x96',
-            sizes: '96x96',
-            type: 'image/png',
-          },
-        ],
-      });
+  async addEpisode({ commit }, episode) {
+    const savedEpisode = await this.$storage.getEpisode(episode.id);
+    if (savedEpisode) {
+      commit('SET_EPISODE', savedEpisode);
+    } else {
+      commit('SET_EPISODE', episode);
     }
-    commit('SET_EPISODE', episode);
     commit('SET_PLAYING', false);
+  },
+  async getLastPlayedEpisode({ commit }) {
+    const episodeData = await this.$api.getLastPlayedEpisode();
+
+    if (episodeData) {
+      const { episode, playbackTime = 0 } = episodeData;
+
+      const savedEpisode = await this.$storage.getEpisode(episode.id);
+      if (savedEpisode) {
+        commit('SET_EPISODE', savedEpisode);
+        commit('SET_LAST_PLAYED_EPISODE_URL', savedEpisode.audioUrl);
+      } else {
+        commit('SET_EPISODE', episode);
+        commit('SET_LAST_PLAYED_EPISODE_URL', episode.audioUrl);
+      }
+
+      commit('SET_LAST_PLAYBACK_TIME', playbackTime);
+    }
   },
 };
 
@@ -55,4 +73,7 @@ export const getters = {
   currentTime: (state) => state.currentTime,
   currentEpisode: (state) => state.currentEpisode,
   hasEpisode: (state) => !!state.currentEpisode,
+  isLastPlayedEpisode: (state) =>
+    state.currentEpisode.audioUrl === state.lastPlayedEpisodeUrl,
+  lastPlaybackTime: (state) => state.lastPlaybackTime,
 };

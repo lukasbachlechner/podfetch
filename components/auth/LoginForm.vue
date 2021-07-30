@@ -63,7 +63,7 @@ export default {
         const { data } = await this.$auth.loginWith('local', {
           data: { ...this.form },
         });
-        this.$auth.setUser(data.user);
+        await this.$auth.setUser(data.user);
       } catch (e) {
         this.errors = e.response.data.errors;
       } finally {

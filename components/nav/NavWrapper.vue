@@ -20,7 +20,7 @@ export default {};
 }
 
 .nav__wrapper {
-  @apply fixed z-50 left-0 bottom-0 bg-haiti-middle w-full;
+  @apply fixed z-20 left-0 bottom-0 bg-haiti-middle w-full;
   @apply md:w-auto md:top-0 md:p-0;
   @apply lg:w-64;
 }

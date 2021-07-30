@@ -34,6 +34,6 @@ export default {
 
 <style scoped>
 .category__pill-link {
-  @apply flex bg-haiti-middle rounded-full px-6 py-2 mr-2 mb-2;
+  @apply flex bg-haiti-middle rounded-full px-6 py-2 mr-2 mb-2 cursor-pointer hover:bg-haiti-high;
 }
 </style>

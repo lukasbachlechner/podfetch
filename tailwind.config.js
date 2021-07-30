@@ -36,10 +36,10 @@ module.exports = {
           high: '#191345',
         },
         error: {
-          DEFAULT: '#ff0000',
+          DEFAULT: '#cc3232',
         },
         success: {
-          DEFAULT: '#00ff00',
+          DEFAULT: '#37b24a',
         },
       },
       screens: {
@@ -58,6 +58,9 @@ module.exports = {
         },
         '.ml-22': {
           marginLeft: '5.5rem',
+        },
+        '.top-27': {
+          top: '6.75rem',
         },
         '.mt-27': {
           marginTop: '6.75rem',

@@ -101,11 +101,11 @@ export default {
 }
 
 .episode__content {
-  @apply mt-8;
+  @apply mt-8 max-w-prose;
 }
 
-.episode__content >>> * {
-  @apply leading-loose;
+.episode__content >>> *:not(h2) {
+  @apply leading-loose text-opacity-50 text-white;
 }
 
 .episode__content >>> a {

@@ -1,19 +1,22 @@
 <template>
   <div class="page">
-    <category-pill-list
-      :categories="chosenCategories"
-      :has-link="false"
-      class="mb-4"
-      @category-clicked="handleCategoryClicked"
-    />
-    <label for="categorySearchInput" class="sr-only">Search</label>
-    <form-input
-      type="search"
-      v-model="searchTerm"
-      placeholder="Search"
-      id="categorySearchInput"
-      class="mb-8"
-    />
+    <header class="category-picker__header">
+      <category-pill-list
+        :categories="chosenCategories"
+        :has-link="false"
+        class="mb-4"
+        @category-clicked="handleCategoryClicked"
+      />
+      <label for="categorySearchInput" class="sr-only">Search</label>
+      <form-input
+        type="search"
+        v-model="searchTerm"
+        placeholder="Search"
+        id="categorySearchInput"
+        class="mb-8"
+      />
+    </header>
+
     <ul class="category-picker__list">
       <li
         class="category-picker__item"
@@ -68,6 +71,10 @@ export default {
 </script>
 
 <style scoped>
+.category-picker__header {
+  @apply fixed top-20;
+  @apply md:top-24;
+}
 .category-picker__list {
   @apply grid grid-cols-2 gap-4;
   @apply md:grid-cols-4;

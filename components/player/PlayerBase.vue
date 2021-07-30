@@ -36,19 +36,11 @@
         @track-change="handleRangeChange"
         ref="playerTrack"
       />
-      <player-actions
-        @download-episode="
-          $store.dispatch('downloader/downloadEpisode', currentEpisode)
-        "
-      />
+      <player-actions />
 
-      <!--
-      the audio element has to have autoplay enabled (safari ios issue)
-      so that the loadeddata-event gets fired when it should :D
-       -->
       <audio
-        autoplay
         :src="currentEpisode.audioUrl"
+        :type="currentEpisode.audioType"
         ref="player"
         class="hidden"
         @loadedmetadata="displayMetadata"
@@ -76,22 +68,43 @@ export default {
       currentEpisode: 'player/currentEpisode',
       playerOpen: 'player/mobilePlayerOpen',
       hasEpisode: 'player/hasEpisode',
+      isLastPlayedEpisode: 'player/isLastPlayedEpisode',
+      lastPlaybackTime: 'player/lastPlaybackTime',
+      isEpisodeDownloaded: 'downloader/isEpisodeDownloaded',
     }),
-    isSafariIOS() {
-      const isSafari = !!navigator.userAgent.match(/Version\/[\d.]+.*Safari/);
-      const isIOS =
-        /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-      return isSafari && isIOS;
+    isCurrentEpisodeDownloaded() {
+      return this.isEpisodeDownloaded(this.currentEpisode.id);
+    },
+    isIOS() {
+      // detect if the device is a mobile iOS device
+      // https://stackoverflow.com/questions/9038625/detect-if-device-is-ios
+      return (
+        [
+          'iPad Simulator',
+          'iPhone Simulator',
+          'iPod Simulator',
+          'iPad',
+          'iPhone',
+          'iPod',
+        ].includes(navigator.platform) ||
+        // iPad on iOS 13 detection
+        (navigator.userAgent.includes('Mac') && 'ontouchend' in document)
+      );
     },
   },
-  mounted() {
-    const lastPlayedEpisode = JSON.parse(
-      localStorage.getItem('lastPlayedEpisode')
-    );
-    if (lastPlayedEpisode) {
-      lastPlayedEpisode.isLastPlayedEpisode = true;
-      this.$store.commit('player/SET_EPISODE', lastPlayedEpisode);
-    }
+  async mounted() {
+    await this.$store.dispatch('player/getLastPlayedEpisode');
+
+    /**
+     * the audio element has to have autoplay enabled (safari ios issue)
+     * so that the loadeddata-event gets fired when it should.
+     */
+    this.$nextTick(() => {
+      if (this.isIOS) {
+        const { player } = this.$refs;
+        player.autoplay = true;
+      }
+    });
   },
   methods: {
     openPlayer() {
@@ -158,16 +171,10 @@ export default {
       this.stopInterval();
     },
     handleAudioLoaded() {
-      localStorage.setItem(
-        'lastPlayedEpisode',
-        JSON.stringify(this.currentEpisode)
-      );
-
-      if (!this.currentEpisode.isLastPlayedEpisode) {
+      if (!this.isLastPlayedEpisode) {
         this.playAudio();
       } else {
-        const lastPlaybackTime = localStorage.getItem('lastPlaybackTime');
-        this.setCurrentTime(lastPlaybackTime);
+        this.setCurrentTime(this.lastPlaybackTime);
       }
     },
     setCurrentTime(value) {
@@ -183,7 +190,11 @@ export default {
         player.currentTime = roundedValue;
       }
       this.$store.commit('player/SET_CURRENT_TIME', roundedValue);
-      localStorage.setItem('lastPlaybackTime', roundedValue);
+      this.$api.setLastPlaybackTime(
+        this.currentEpisode.id,
+        this.currentEpisode,
+        roundedValue
+      );
     },
     handleSkipForward() {
       const { player } = this.$refs;
@@ -213,7 +224,7 @@ export default {
 }
 
 .player__info {
-  @apply flex flex-col overflow-hidden relative z-10;
+  @apply flex flex-col overflow-hidden relative z-50;
   @apply md:w-36 md:mr-4;
 }
 

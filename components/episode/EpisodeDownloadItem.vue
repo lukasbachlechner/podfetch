@@ -49,7 +49,6 @@ export default {
   },
   methods: {
     playEpisode() {
-      // this.$store.commit('player/SET_EPISODE', this.episode);
       this.$store.dispatch('player/addEpisode', this.episode);
     },
   },

@@ -1,12 +1,21 @@
 export const state = () => ({
   isDownloading: false,
+  storageEstimate: null,
   currentDownloads: [],
+  downloadedEpisodes: [],
 });
 
 export const mutations = {
   SET_DOWNLOAD(state, episode) {
     episode.canDownload = true;
     state.currentDownloads.push(episode);
+  },
+  REMOVE_DOWNLOAD(state, episodeId) {
+    const episodeIndex = state.currentDownloads.findIndex(
+      (download) => download.id === episodeId
+    );
+
+    state.currentDownloads.splice(episodeIndex);
   },
   UPDATE_DOWNLOAD_PROGRESS(
     state,
@@ -47,50 +56,80 @@ export const mutations = {
       canDownload: true,
     });
   },
+
+  SET_DOWNLOADED_EPISODE(state, episode) {
+    state.downloadedEpisodes.push(episode);
+  },
+
+  REMOVE_DOWNLOADED_EPISODE(state, episodeId) {
+    const episodeIndex = state.downloadedEpisodes.findIndex(
+      (episode) => episode.id === episodeId
+    );
+    state.downloadedEpisodes.splice(episodeIndex, 1);
+  },
+
+  SET_STORAGE_ESTIMATE(state, storageEstimate) {
+    state.storageEstimate = storageEstimate;
+  },
 };
 
 export const actions = {
   async downloadEpisode({ commit, state, dispatch }, episode) {
+    const { remaining } = await this.$storage.estimate();
+
+    if (episode.audioSize >= remaining) {
+      this.$notify(
+        'Downloading this episode exceeds your storage quota.',
+        'error'
+      );
+      return;
+    }
+
     const episodeAlreadyDownloading =
       state.currentDownloads.findIndex(
         (download) => download.id === episode.id
       ) !== -1;
 
-    if (episodeAlreadyDownloading) {
+    const episodeAlreadyDownloaded =
+      state.downloadedEpisodes.findIndex(
+        (downloadedEpisode) => downloadedEpisode.id === episode.id
+      ) !== -1;
+
+    if (episodeAlreadyDownloading || episodeAlreadyDownloaded) {
+      this.$notify(`"${episode.title}" is already downloaded.`, 'error');
       return;
     }
 
-    let proxyDownloadSuccess = true;
+    let downloadSuccess = true;
     let audioBlob = null;
 
     episode.downloadProgress = 0;
     commit('SET_DOWNLOAD', episode);
     try {
-      const audioUrl =
-        this.$config.apiUrl + 'audio/' + encodeURIComponent(episode.audioUrl);
       audioBlob = await dispatch('getEpisodeAsBlob', {
         episode,
-        url: audioUrl,
+        url: episode.audioUrl,
       });
     } catch (e) {
-      proxyDownloadSuccess = false;
+      downloadSuccess = false;
     }
 
-    if (!proxyDownloadSuccess) {
+    if (!downloadSuccess) {
       try {
+        const audioUrl =
+          this.$config.apiUrl + 'audio/' + encodeURIComponent(episode.audioUrl);
         audioBlob = await dispatch('getEpisodeAsBlob', {
           episode,
-          url: episode.audioUrl,
+          url: audioUrl,
         });
       } catch (e) {
         commit('SET_DOWNLOAD_ERROR', episode.id);
       }
     }
 
-    console.log(audioBlob);
+    await dispatch('saveEpisode', { episode, blob: audioBlob });
   },
   getEpisodeAsBlob({ commit }, { episode, url }) {
-    console.log(url);
     return this.$axios.$get(url, {
       responseType: 'blob',
       withCredentials: false,
@@ -105,8 +144,42 @@ export const actions = {
       },
     });
   },
+  async saveEpisode({ commit, dispatch }, { episode, blob }) {
+    commit('REMOVE_DOWNLOAD', episode.id);
+    delete episode.canDownload;
+    delete episode.downloadProgress;
+    commit('SET_DOWNLOADED_EPISODE', episode);
+
+    await this.$storage.setEpisode(episode, blob);
+
+    await dispatch('getStorageEstimate');
+  },
+  async getAllSavedEpisodes({ commit }) {
+    const episodes = await this.$storage.getAllEpisodes();
+    episodes.forEach((episode) => {
+      commit('SET_DOWNLOADED_EPISODE', episode);
+    });
+  },
+  async getStorageEstimate({ commit }) {
+    const storageEstimate = await this.$storage.estimate();
+    console.log(storageEstimate);
+    if (storageEstimate) {
+      commit('SET_STORAGE_ESTIMATE', storageEstimate);
+    }
+  },
+  async deleteEpisode({ commit, dispatch }, episodeId) {
+    await this.$storage.deleteEpisode(episodeId);
+    commit('REMOVE_DOWNLOADED_EPISODE', episodeId);
+    await dispatch('getStorageEstimate');
+  },
 };
 
 export const getters = {
   currentDownloads: (state) => state.currentDownloads,
+  downloadedEpisodes: (state) => state.downloadedEpisodes,
+  storageEstimate: (state) => state.storageEstimate,
+  isEpisodeDownloaded: (state) => (episodeId) =>
+    state.downloadedEpisodes.findIndex(
+      (episode) => episode.id === episodeId
+    ) !== -1,
 };

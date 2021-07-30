@@ -43,7 +43,7 @@ export default {
 
 <style scoped>
 .page__header {
-  @apply bg-haiti p-4 pt-6 fixed left-0 top-0 right-0 z-50 flex items-center justify-between h-20;
+  @apply bg-haiti p-4 pt-6 fixed left-0 top-0 right-0 z-40 flex items-center justify-between h-20;
   @apply md:left-22 md:p-8 md:pt-9 md:h-27;
   @apply lg:left-64;
 }
