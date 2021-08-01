@@ -2,7 +2,7 @@
   <div>
     <page-header title="Home" />
 
-    <section class="section">
+    <section class="section" v-if="$auth.loggedIn">
       <h2 class="h2">Recents</h2>
       <episode-recent-list />
     </section>
