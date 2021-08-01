@@ -75,9 +75,9 @@ export const mutations = {
 
 export const actions = {
   async downloadEpisode({ commit, state, dispatch }, episode) {
-    const { remaining } = await this.$storage.estimate();
+    const storageEstimate = await this.$storage.estimate();
 
-    if (episode.audioSize >= remaining) {
+    if (episode.audioSize >= storageEstimate?.remaining) {
       this.$notify(
         'Downloading this episode exceeds your storage quota.',
         'error'
@@ -122,12 +122,17 @@ export const actions = {
           episode,
           url: audioUrl,
         });
+        downloadSuccess = true;
       } catch (e) {
         commit('SET_DOWNLOAD_ERROR', episode.id);
       }
     }
 
-    await dispatch('saveEpisode', { episode, blob: audioBlob });
+    if (downloadSuccess) {
+      await dispatch('saveEpisode', { episode, blob: audioBlob });
+    } else {
+      this.$notify("Sorry, we couldn't download this episode.");
+    }
   },
   getEpisodeAsBlob({ commit }, { episode, url }) {
     return this.$axios.$get(url, {
