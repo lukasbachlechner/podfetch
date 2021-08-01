@@ -6,6 +6,9 @@ export const state = () => ({
 });
 
 export const mutations = {
+  SET_IS_DOWNLOADING(state, isDownloading = true) {
+    state.isDownloading = isDownloading;
+  },
   SET_DOWNLOAD(state, episode) {
     episode.canDownload = true;
     state.currentDownloads.push(episode);
@@ -75,6 +78,7 @@ export const mutations = {
 
 export const actions = {
   async downloadEpisode({ commit, state, dispatch }, episode) {
+    commit('SET_IS_DOWNLOADING');
     const storageEstimate = await this.$storage.estimate();
 
     if (episode.audioSize >= storageEstimate?.remaining) {
@@ -131,8 +135,11 @@ export const actions = {
     if (downloadSuccess) {
       await dispatch('saveEpisode', { episode, blob: audioBlob });
     } else {
-      this.$notify("Sorry, we couldn't download this episode.");
+      commit('REMOVE_DOWNLOAD', episode.id);
+      this.$notify("Sorry, we couldn't download this episode.", 'error');
     }
+
+    commit('SET_IS_DOWNLOADING', false);
   },
   getEpisodeAsBlob({ commit }, { episode, url }) {
     return this.$axios.$get(url, {
@@ -167,7 +174,6 @@ export const actions = {
   },
   async getStorageEstimate({ commit }) {
     const storageEstimate = await this.$storage.estimate();
-    console.log(storageEstimate);
     if (storageEstimate) {
       commit('SET_STORAGE_ESTIMATE', storageEstimate);
     }
@@ -180,6 +186,7 @@ export const actions = {
 };
 
 export const getters = {
+  isDownloading: (state) => state.isDownloading,
   currentDownloads: (state) => state.currentDownloads,
   downloadedEpisodes: (state) => state.downloadedEpisodes,
   storageEstimate: (state) => state.storageEstimate,

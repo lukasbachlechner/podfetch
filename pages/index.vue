@@ -1,6 +1,12 @@
 <template>
   <div>
     <page-header title="Home" />
+
+    <section class="section">
+      <h2 class="h2">Recents</h2>
+      <episode-recent-list />
+    </section>
+
     <section class="section">
       <h2 class="h2">Trending</h2>
       <podcast-list :podcasts="trendingPodcasts" />

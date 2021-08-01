@@ -14,7 +14,8 @@
         </div>
       </div>
       <div class="player__image">
-        <ui-image :src="currentEpisode.image" />
+        <ui-image :src="currentEpisode.image" v-show="!isEpisodeLoading" />
+        <loading-spinner v-show="isEpisodeLoading" />
       </div>
       <div class="player__info">
         <nuxt-link to="/" class="player__episode ellipsis">{{
@@ -46,6 +47,7 @@
         @loadedmetadata="displayMetadata"
         @loadeddata="handleAudioLoaded"
         @ended="handlePlaybackEnded"
+        @stalled="handleStalled"
       ></audio>
 
       <button @click="openPlayer" class="player__open-button">
@@ -71,6 +73,7 @@ export default {
       isLastPlayedEpisode: 'player/isLastPlayedEpisode',
       lastPlaybackTime: 'player/lastPlaybackTime',
       isEpisodeDownloaded: 'downloader/isEpisodeDownloaded',
+      isEpisodeLoading: 'player/episodeLoading',
     }),
     isCurrentEpisodeDownloaded() {
       return this.isEpisodeDownloaded(this.currentEpisode.id);
@@ -171,6 +174,8 @@ export default {
       this.stopInterval();
     },
     handleAudioLoaded() {
+      this.$store.commit('player/SET_EPISODE_LOADING', false);
+
       if (!this.isLastPlayedEpisode) {
         this.playAudio();
       } else {
@@ -209,6 +214,16 @@ export default {
 
       this.setCurrentTime(currentTime - 15);
     },
+    handleStalled() {
+      console.log('playback stalled');
+    },
+  },
+  watch: {
+    currentEpisode(newEpisode) {
+      if (newEpisode === null) {
+        this.stopInterval();
+      }
+    },
   },
 };
 </script>
@@ -220,7 +235,7 @@ export default {
 }
 
 .player__image {
-  @apply w-14 h-14 rounded bg-white flex-shrink-0 mr-4;
+  @apply w-14 h-14 rounded bg-white bg-opacity-5 flex-shrink-0 mr-4 flex items-center justify-center;
 }
 
 .player__info {
@@ -279,7 +294,7 @@ export default {
   }
 
   .player--open >>> .player__play-button {
-    @apply flex-grow-0 w-16 h-16;
+    @apply flex-grow-0 w-16 h-16 mx-8;
   }
 
   .player--open >>> .player__skip-button {

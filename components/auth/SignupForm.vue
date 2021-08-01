@@ -86,6 +86,7 @@ export default {
             data: { email, password },
           });
           this.$auth.setUser(data.user);
+          this.$api.setToken();
         }
       } catch (e) {
         this.errors = e.response.data.errors;

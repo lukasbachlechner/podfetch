@@ -1,5 +1,6 @@
 export const state = () => ({
   isPlaying: false,
+  episodeLoading: false,
   totalDuration: null,
   currentTime: null,
   currentEpisode: null,
@@ -34,10 +35,14 @@ export const mutations = {
   SET_LAST_PLAYBACK_TIME(state, playbackTime) {
     state.lastPlaybackTime = playbackTime;
   },
+  SET_EPISODE_LOADING(state, isLoading = true) {
+    state.episodeLoading = isLoading;
+  },
 };
 
 export const actions = {
-  async addEpisode({ commit }, episode) {
+  async addEpisode({ commit, state }, episode) {
+    commit('SET_EPISODE_LOADING', true);
     const savedEpisode = await this.$storage.getEpisode(episode.id);
     if (savedEpisode) {
       commit('SET_EPISODE', savedEpisode);
@@ -45,6 +50,10 @@ export const actions = {
       commit('SET_EPISODE', episode);
     }
     commit('SET_PLAYING', false);
+
+    if (episode.audioUrl !== state.lastPlayedEpisodeUrl) {
+      commit('SET_LAST_PLAYED_EPISODE_URL', null);
+    }
   },
   async getLastPlayedEpisode({ commit }) {
     const episodeData = await this.$api.getLastPlayedEpisode();
@@ -76,4 +85,5 @@ export const getters = {
   isLastPlayedEpisode: (state) =>
     state.currentEpisode.audioUrl === state.lastPlayedEpisodeUrl,
   lastPlaybackTime: (state) => state.lastPlaybackTime,
+  episodeLoading: (state) => state.episodeLoading,
 };

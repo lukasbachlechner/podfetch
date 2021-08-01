@@ -111,6 +111,7 @@ export default {
         },
         token: {
           property: 'token',
+          maxAge: 604800,
         },
         endpoints: {
           login: {

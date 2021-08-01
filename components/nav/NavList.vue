@@ -14,11 +14,6 @@ export default {
         link: '/',
       },
       {
-        title: 'Explore',
-        icon: 'compass',
-        link: '/explore',
-      },
-      {
         title: 'Listen Later',
         icon: 'heart',
         link: '/listen-later',

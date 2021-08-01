@@ -64,6 +64,9 @@ export default {
           data: { ...this.form },
         });
         await this.$auth.setUser(data.user);
+        this.$api.setToken();
+
+        await this.$store.dispatch('player/getLastPlayedEpisode');
       } catch (e) {
         this.errors = e.response.data.errors;
       } finally {

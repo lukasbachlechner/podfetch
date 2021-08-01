@@ -31,8 +31,19 @@ export default {
       pagination: {
         el: '.swiper-pagination',
       },
-      slidesPerView: 5.5,
+      slidesPerView: 2.5,
       spaceBetween: 16,
+      breakpoints: {
+        640: {
+          slidesPerView: 3.5,
+        },
+        768: {
+          slidesPerView: 4.5,
+        },
+        1024: {
+          slidesPerView: 5.5,
+        },
+      },
     },
 
     loading: true,

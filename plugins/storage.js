@@ -1,4 +1,4 @@
-export default function ({ $localForage, $formatter }, inject) {
+export default function ({ $localForage, $formatter, $api, app }, inject) {
   class StorageClient {
     constructor() {
       this.client = $localForage;
@@ -25,6 +25,7 @@ export default function ({ $localForage, $formatter }, inject) {
     }
 
     async setEpisode(episode, blob) {
+      console.log(blob);
       const episodeDataResult = await this.client.savedEpisodeData.setItem(
         episode.id.toString(),
         episode
@@ -64,7 +65,32 @@ export default function ({ $localForage, $formatter }, inject) {
       return episode;
     }
 
+    getLocalPlayback() {
+      return JSON.parse(localStorage.getItem('lastPlayback'));
+    }
+
+    setLocalPlayback(episode, playbackTime) {
+      localStorage.setItem(
+        'lastPlayback',
+        JSON.stringify({ episode, playbackTime })
+      );
+    }
+
+    deleteLocalPlayback() {
+      localStorage.removeItem('lastPlayback');
+    }
+
     async deleteEpisode(episodeId) {
+      const localPlayback = this.getLocalPlayback();
+
+      if (
+        localPlayback?.episode?.id === episodeId &&
+        localPlayback?.episode?.audioUrl?.startsWith('blob:')
+      ) {
+        this.deleteLocalPlayback();
+        app.store.commit('player/SET_EPISODE', null);
+      }
+
       await this.client.savedEpisodeData.removeItem(episodeId.toString());
       await this.client.savedAudioFiles.removeItem(episodeId.toString());
     }

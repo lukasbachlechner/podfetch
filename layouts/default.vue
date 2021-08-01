@@ -3,7 +3,7 @@
     <notification-wrapper />
     <nav-wrapper />
     <main class="content">
-      <Nuxt keep-alive />
+      <Nuxt />
       <loading-screen v-if="isLoading" />
     </main>
   </div>

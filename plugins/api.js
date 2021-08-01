@@ -1,4 +1,4 @@
-export default function ({ $axios, $config, $auth }, inject) {
+export default function ({ $axios, $config, $auth, $storage }, inject) {
   class ApiClient {
     constructor() {
       this.client = $axios.create({
@@ -17,6 +17,10 @@ export default function ({ $axios, $config, $auth }, inject) {
           this.handleConnectionChange(e)
         );
       }
+    }
+
+    setToken() {
+      this.client.setToken($auth.strategy.token.get());
     }
 
     handleConnectionChange({ type }) {
@@ -82,11 +86,15 @@ export default function ({ $axios, $config, $auth }, inject) {
       });
     }
 
+    getRecentEpisodes() {
+      return this.client.$get('user/recent-episodes');
+    }
+
     async getLastPlayedEpisode() {
       if ($auth.loggedIn && !this.isOffline) {
         return await this.client.$get('user/last-playback');
       } else {
-        return JSON.parse(localStorage.getItem('lastPlayback'));
+        return $storage.getLocalPlayback();
       }
     }
 
@@ -99,10 +107,7 @@ export default function ({ $axios, $config, $auth }, inject) {
         };
         this.sendBeacon($config.apiUrl + 'user/last-playback-time', payload);
       } else {
-        localStorage.setItem(
-          'lastPlayback',
-          JSON.stringify({ episode, playbackTime })
-        );
+        $storage.setLocalPlayback(episode, playbackTime);
       }
     }
 
