@@ -86,6 +86,7 @@ export const actions = {
         'Downloading this episode exceeds your storage quota.',
         'error'
       );
+      commit('SET_IS_DOWNLOADING', false);
       return;
     }
 
@@ -101,6 +102,7 @@ export const actions = {
 
     if (episodeAlreadyDownloading || episodeAlreadyDownloaded) {
       this.$notify(`"${episode.title}" is already downloaded.`, 'error');
+      commit('SET_IS_DOWNLOADING', false);
       return;
     }
 
@@ -131,6 +133,7 @@ export const actions = {
         commit('SET_DOWNLOAD_ERROR', episode.id);
       }
     }
+    commit('SET_IS_DOWNLOADING', false);
 
     if (downloadSuccess) {
       await dispatch('saveEpisode', { episode, blob: audioBlob });
@@ -138,8 +141,6 @@ export const actions = {
       commit('REMOVE_DOWNLOAD', episode.id);
       this.$notify("Sorry, we couldn't download this episode.", 'error');
     }
-
-    commit('SET_IS_DOWNLOADING', false);
   },
   getEpisodeAsBlob({ commit }, { episode, url }) {
     return this.$axios.$get(url, {

@@ -1,7 +1,7 @@
 <template>
   <ul class="recent-episode__list">
     <episode-recent-item
-      v-for="episode in recentEpisodes"
+      v-for="episode in episodes"
       :key="episode.id"
       :episode="episode"
     />
@@ -10,15 +10,11 @@
 
 <script>
 export default {
-  data: () => ({
-    recentEpisodes: [],
-  }),
-  async fetch() {
-    try {
-      this.recentEpisodes = await this.$api.getRecentEpisodes();
-    } catch (e) {
-      console.error(e.message);
-    }
+  props: {
+    episodes: {
+      type: Array,
+      required: true,
+    },
   },
 };
 </script>

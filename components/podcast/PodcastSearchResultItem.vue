@@ -48,7 +48,7 @@ export default {
 }
 
 .podcast__wrapper {
-  @apply flex p-4 bg-haiti-middle rounded items-center hover:bg-haiti-high;
+  @apply flex p-4 bg-haiti-middle rounded items-center hover-safe:hover:bg-haiti-high;
 }
 
 .podcast__image {

@@ -64,7 +64,7 @@ export default {
     },
     downloadEpisode() {
       this.$store.dispatch('downloader/downloadEpisode', this.episode);
-      this.$router.push('/listen-later');
+      this.$router.push('/downloads');
     },
   },
   computed: {

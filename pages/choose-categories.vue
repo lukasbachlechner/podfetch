@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-header title="Choose your favourite categories" />
+    <page-header title="Personalize" />
     <category-picker />
   </div>
 </template>

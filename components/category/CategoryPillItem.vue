@@ -4,7 +4,7 @@
       :is="hasLink ? 'nuxt-link' : 'span'"
       @click="handleClick"
       class="category__pill-link"
-      :to="`/category/${category.slug}`"
+      :to="`/categories/${category.slug}`"
       >{{ category.name }}</component
     >
   </li>
@@ -34,6 +34,6 @@ export default {
 
 <style scoped>
 .category__pill-link {
-  @apply flex bg-haiti-middle rounded-full px-6 py-2 mr-2 mb-2 cursor-pointer hover:bg-haiti-high;
+  @apply flex bg-haiti-middle rounded-full px-6 py-2 mr-2 mb-2 cursor-pointer hover-safe:hover:bg-haiti-high;
 }
 </style>

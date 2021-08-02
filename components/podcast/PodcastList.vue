@@ -39,9 +39,12 @@ export default {
         },
         768: {
           slidesPerView: 4.5,
+          slidesOffsetAfter: 32,
         },
         1024: {
           slidesPerView: 5.5,
+
+          slidesOffsetAfter: 32,
         },
       },
     },

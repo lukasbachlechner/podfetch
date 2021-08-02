@@ -1,13 +1,15 @@
 <template>
   <div>
     <img
-      v-if="src"
+      v-show="src && loaded"
       :src="imageUrl"
       :alt="alt"
       class="ui__image"
       loading="lazy"
+      @load="loaded = true"
     />
-    <div v-else class="ui__image-placeholder">
+    <div v-show="!loaded" class="ui__image-skeleton"></div>
+    <div v-show="!src" class="ui__image-placeholder">
       <ui-icon name="image" />
     </div>
   </div>
@@ -15,6 +17,9 @@
 
 <script>
 export default {
+  data: () => ({
+    loaded: false,
+  }),
   props: {
     src: {
       type: String,
@@ -47,7 +52,11 @@ export default {
 }
 
 .ui__image-placeholder {
-  @apply bg-haiti-high w-full h-full rounded flex items-center justify-center;
+  @apply bg-haiti-high w-full h-full rounded flex items-center justify-center aspect-h-1 aspect-w-1;
+}
+
+.ui__image-skeleton {
+  @apply bg-haiti-high w-full h-full rounded aspect-h-1 aspect-w-1 animate-pulse;
 }
 
 .ui__image::before {

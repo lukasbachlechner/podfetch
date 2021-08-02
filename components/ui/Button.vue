@@ -81,7 +81,7 @@ export default {
 }
 
 .button--link {
-  @apply bg-transparent hover:underline;
+  @apply bg-transparent hover-safe:hover:underline;
 }
 
 .button--outline {

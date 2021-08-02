@@ -1,10 +1,10 @@
 <template>
-  <swiper-slide>
+  <li>
     <nuxt-link
       :to="`/podcast/${podcast.titleSlug}/${podcast.id}`"
       class="podcast__item"
     >
-      <div class="aspect-h-1 aspect-w-1">
+      <div>
         <ui-image
           class="podcast__image"
           :src="imageUrl"
@@ -17,7 +17,7 @@
 
       <h3 class="podcast__title">{{ podcast.title }}</h3>
     </nuxt-link>
-  </swiper-slide>
+  </li>
 </template>
 
 <script>

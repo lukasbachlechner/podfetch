@@ -18,12 +18,16 @@
         <loading-spinner v-show="isEpisodeLoading" />
       </div>
       <div class="player__info">
-        <nuxt-link to="/" class="player__episode ellipsis">{{
-          currentEpisode.title
-        }}</nuxt-link>
-        <nuxt-link to="/" class="player__podcast">{{
-          currentEpisode.podcastTitle
-        }}</nuxt-link>
+        <nuxt-link
+          :to="`/episode/${currentEpisode.titleSlug}/${currentEpisode.id}`"
+          class="player__episode ellipsis"
+          >{{ currentEpisode.title }}</nuxt-link
+        >
+        <nuxt-link
+          :to="`/podcast/${currentEpisode.podcastTitleSlug}/${currentEpisode.podcastId}`"
+          class="player__podcast"
+          >{{ currentEpisode.podcastTitle }}</nuxt-link
+        >
       </div>
 
       <player-controls

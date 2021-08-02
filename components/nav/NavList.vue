@@ -19,6 +19,11 @@ export default {
         link: '/listen-later',
       },
       {
+        title: 'Downloads',
+        icon: 'download',
+        link: '/downloads',
+      },
+      {
         title: 'Categories',
         icon: 'grid',
         link: '/categories',

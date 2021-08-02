@@ -35,4 +35,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.icon__container {
+  @apply flex justify-center items-center;
+}
+</style>

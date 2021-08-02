@@ -44,6 +44,7 @@ module.exports = {
       },
       screens: {
         'max-md': { max: '767px' },
+        'hover-safe': { raw: '(hover: hover)' },
       },
     },
   },

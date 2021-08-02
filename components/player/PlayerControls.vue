@@ -37,6 +37,6 @@ export default {
 }
 
 .player__skip-button {
-  @apply hidden md:block hover:opacity-100;
+  @apply hidden md:block hover-safe:hover:opacity-100;
 }
 </style>

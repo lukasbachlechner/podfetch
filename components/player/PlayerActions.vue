@@ -32,7 +32,7 @@ export default {
   methods: {
     downloadEpisode() {
       this.$store.dispatch('downloader/downloadEpisode', this.currentEpisode);
-      this.$router.push('/listen-later');
+      this.$router.push('/downloads');
     },
   },
 };

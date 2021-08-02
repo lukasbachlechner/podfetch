@@ -5,7 +5,7 @@
       class="flex flex-col"
       novalidate
       v-slot="{ invalid }"
-      @submit.prevent="onSubmit"
+      @submit.prevent="$emit('signup-submit', form)"
     >
       <form-group
         label="E-Mail"
@@ -61,9 +61,9 @@ export default {
       checkLoading: false,
     },
     form: {
-      email: '',
-      password: '',
-      passwordConfirmation: '',
+      email: 'b@a.com',
+      password: 'Password1!',
+      passwordConfirmation: 'Password1!',
     },
   }),
 

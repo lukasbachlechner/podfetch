@@ -1,21 +1,66 @@
 <template>
-  <section class="auth__section">
-    <div class="">
+  <div>
+    <page-header title="Create Your Account" />
+    <section class="auth__section" v-if="step === 1">
       <div>
-        <h2 class="title">Create Your Account</h2>
         <p class="muted">
           Enter your details below to start your listening experience.
         </p>
+
+        <div class="mt-8">
+          <auth-signup-form @signup-submit="handleSignupSubmit" />
+        </div>
       </div>
-      <div class="mt-8">
-        <auth-signup-form />
-      </div>
-    </div>
-  </section>
+    </section>
+
+    <section v-if="step === 2">
+      <category-picker @categories-chosen="handleCategoriesChosen" />
+    </section>
+  </div>
 </template>
 
 <script>
-export default {};
+export default {
+  data: () => ({
+    step: 1,
+    form: null,
+  }),
+  methods: {
+    handleSignupSubmit(form) {
+      this.form = form;
+      this.step = 2;
+    },
+    async handleCategoriesChosen(categoryPreferences) {
+      this.isLoading = true;
+      this.errors = [];
+
+      const { email, password, passwordConfirmation } = this.form;
+
+      const categoryIds = categoryPreferences.map((category) => category.id);
+
+      try {
+        const user = await this.$api.register(
+          email,
+          password,
+          passwordConfirmation,
+          categoryIds
+        );
+
+        if (user) {
+          const { data } = await this.$auth.loginWith('local', {
+            data: { email, password },
+          });
+          this.$auth.setUser(data.user);
+          this.$api.setToken();
+        }
+      } catch (e) {
+        this.errors = e.response.data.errors;
+      } finally {
+        this.isLoading = false;
+      }
+    },
+  },
+};
 </script>
 
 <style scoped></style>

@@ -1,6 +1,6 @@
 <template>
   <li class="category__item">
-    <nuxt-link :to="`/category/${category.slug}`" class="category__link">{{
+    <nuxt-link :to="`/categories/${category.slug}`" class="category__link">{{
       category.name
     }}</nuxt-link>
   </li>
@@ -23,6 +23,6 @@ export default {
 }
 
 .category__link {
-  @apply bg-haiti-middle rounded flex justify-center py-8 hover:bg-haiti-high;
+  @apply bg-haiti-middle rounded flex justify-center py-8 hover-safe:hover:bg-haiti-high;
 }
 </style>

@@ -52,7 +52,7 @@ export default {
 
 <style scoped>
 .episode__item {
-  @apply p-4 rounded bg-haiti-middle mb-4 relative hover:bg-haiti-high;
+  @apply p-4 rounded bg-haiti-middle mb-4 relative hover-safe:hover:bg-haiti-high;
 }
 
 .episode__image {

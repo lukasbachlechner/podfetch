@@ -7,11 +7,12 @@
       class="recent-episode__image"
     />
     <div class="overflow-hidden">
-      <h3 class="ellipsis">
+      <h3 class="ellipsis font-bold">
         {{ episode.title }}
       </h3>
-
-      <ui-progress-bar :value="playbackTime" :max="episode.audioDuration" />
+      <h4 class="ellipsis muted">
+        {{ episode.podcastTitle }}
+      </h4>
     </div>
 
     <nuxt-link
@@ -31,17 +32,12 @@ export default {
       required: true,
     },
   },
-  computed: {
-    playbackTime() {
-      return this.episode.playbackTime ?? 0;
-    },
-  },
 };
 </script>
 
 <style scoped>
 .recent-episode__wrapper {
-  @apply p-4 rounded bg-haiti-middle relative hover:bg-haiti-high cursor-pointer flex items-center;
+  @apply p-4 rounded bg-haiti-middle relative hover-safe:hover:bg-haiti-high cursor-pointer flex items-center;
 }
 
 .recent-episode__image {

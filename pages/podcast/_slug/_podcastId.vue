@@ -13,7 +13,14 @@
           <p>by {{ podcast.author }}</p>
         </div>
       </header>
-      <ui-button>Subscribe</ui-button>
+      <div v-if="$auth.loggedIn">
+        <ui-button @click="handleSubscribe" v-if="!isSubscribed"
+          >Subscribe</ui-button
+        >
+        <ui-button @click="handleUnsubscribe" v-else type="outline"
+          >Unsubscribe</ui-button
+        >
+      </div>
 
       <div class="podcast__content">
         <section class="col-span-2">
@@ -88,6 +95,14 @@ export default {
         return episode;
       });
     },
+    isSubscribed() {
+      return (
+        this.$auth.user.subscribedPodcasts.findIndex(
+          (subscription) =>
+            subscription.podcast_id === this.$route.params.podcastId
+        ) !== -1
+      );
+    },
   },
   methods: {
     async loadMoreEpisodes() {
@@ -104,6 +119,42 @@ export default {
         console.log(e.message);
       } finally {
         this.newEpisodesLoading = false;
+      }
+    },
+    async handleSubscribe() {
+      try {
+        const subscription = await this.$api.subscribeToPodcast(
+          this.$route.params.podcastId
+        );
+        const newSubscriptions = [
+          ...this.$auth.user.subscribedPodcasts,
+          subscription,
+        ];
+        this.$auth.setUser({
+          ...this.$auth.user,
+          subscribedPodcasts: newSubscriptions,
+        });
+        this.$notify(`Subscribed to "${this.podcast.title}".`);
+      } catch (e) {
+        console.error(e.message);
+      }
+    },
+    async handleUnsubscribe() {
+      try {
+        await this.$api.unsubscribeFromPodcast(this.$route.params.podcastId);
+        const newSubscriptions = [...this.$auth.user.subscribedPodcasts];
+        const subscriptionIndex = newSubscriptions.findIndex(
+          (subscription) =>
+            subscription.podcast_id === this.$route.params.podcastId
+        );
+        newSubscriptions.splice(subscriptionIndex, 1);
+        this.$auth.setUser({
+          ...this.$auth.user,
+          subscribedPodcasts: newSubscriptions,
+        });
+        this.$notify(`Unsubscribed from "${this.podcast.title}".`);
+      } catch (e) {
+        console.error(e.message);
       }
     },
   },
@@ -132,7 +183,7 @@ export default {
 }
 
 .podcast__description-show-more {
-  @apply mt-2 cursor-pointer hover:underline inline-block;
+  @apply mt-2 cursor-pointer hover-safe:hover:underline inline-block;
 }
 
 .podcast__section {

@@ -33,11 +33,12 @@ export default function ({ $axios, $config, $auth, $storage }, inject) {
       }
     }
 
-    register(email, password, passwordConfirmation) {
+    register(email, password, passwordConfirmation, categoryPreferences) {
       return this.client.$post('auth/register', {
         email,
         password,
         passwordConfirmation,
+        categoryPreferences,
       });
     }
 
@@ -59,6 +60,10 @@ export default function ({ $axios, $config, $auth, $storage }, inject) {
 
     getPodcastById(id) {
       return this.client.$get('podcasts/' + id);
+    }
+
+    getPodcastsByCategory(category) {
+      return this.client.$get('podcasts/category/' + category.slug);
     }
 
     getEpisodesByPodcastId(id, page, perPage = 10) {
@@ -86,8 +91,28 @@ export default function ({ $axios, $config, $auth, $storage }, inject) {
       });
     }
 
+    subscribeToPodcast(podcastId) {
+      return this.client.$post('subscriptions/subscribe', {
+        podcastId,
+      });
+    }
+
+    unsubscribeFromPodcast(podcastId) {
+      return this.client.$delete('subscriptions/unsubscribe', {
+        data: { podcastId },
+      });
+    }
+
     getRecentEpisodes() {
       return this.client.$get('user/recent-episodes');
+    }
+
+    getSubscribedPodcasts() {
+      return this.client.$get('user/subscribed');
+    }
+
+    getPersonalized(params) {
+      return this.client.$get('user/personalized', { params });
     }
 
     async getLastPlayedEpisode() {
