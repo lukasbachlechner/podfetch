@@ -35,26 +35,21 @@ export default {
   async fetch() {
     this.$store.commit('loading/TOGGLE_LOADING');
     try {
-      const [
-        trendingPodcasts,
-        personalizedPodcasts,
-        recentEpisodes,
-        subscribedPodcasts,
-      ] = await Promise.all([
-        this.$api.getTrending({
-          max: 8,
-        }),
-        this.$api.getPersonalized({
-          max: 8,
-        }),
-        this.$api.getRecentEpisodes(),
-        this.$api.getSubscribedPodcasts(),
-      ]);
+      this.trendingPodcasts = await this.$api.getTrending({ max: 8 });
+      if (this.$auth.loggedIn) {
+        const [personalizedPodcasts, recentEpisodes, subscribedPodcasts] =
+          await Promise.all([
+            this.$api.getPersonalized({
+              max: 8,
+            }),
+            this.$api.getRecentEpisodes(),
+            this.$api.getSubscribedPodcasts(),
+          ]);
 
-      this.trendingPodcasts = trendingPodcasts;
-      this.personalizedPodcasts = personalizedPodcasts;
-      this.recentEpisodes = recentEpisodes;
-      this.subscribedPodcasts = subscribedPodcasts;
+        this.personalizedPodcasts = personalizedPodcasts;
+        this.recentEpisodes = recentEpisodes;
+        this.subscribedPodcasts = subscribedPodcasts;
+      }
     } catch (e) {
       console.error(e.message);
     } finally {

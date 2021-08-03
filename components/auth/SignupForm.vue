@@ -61,39 +61,13 @@ export default {
       checkLoading: false,
     },
     form: {
-      email: 'b@a.com',
-      password: 'Password1!',
-      passwordConfirmation: 'Password1!',
+      email: '',
+      password: '',
+      passwordConfirmation: '',
     },
   }),
 
   methods: {
-    async onSubmit() {
-      this.isLoading = true;
-      this.errors = [];
-
-      const { email, password, passwordConfirmation } = this.form;
-
-      try {
-        const user = await this.$api.register(
-          email,
-          password,
-          passwordConfirmation
-        );
-
-        if (user) {
-          const { data } = await this.$auth.loginWith('local', {
-            data: { email, password },
-          });
-          this.$auth.setUser(data.user);
-          this.$api.setToken();
-        }
-      } catch (e) {
-        this.errors = e.response.data.errors;
-      } finally {
-        this.isLoading = false;
-      }
-    },
     async checkEmail(isInvalid) {
       if (isInvalid) {
         return false;

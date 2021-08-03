@@ -31,7 +31,7 @@ export default {
       this.step = 2;
     },
     async handleCategoriesChosen(categoryPreferences) {
-      this.isLoading = true;
+      this.$store.commit('loading/TOGGLE_LOADING');
       this.errors = [];
 
       const { email, password, passwordConfirmation } = this.form;
@@ -52,11 +52,13 @@ export default {
           });
           this.$auth.setUser(data.user);
           this.$api.setToken();
+
+          this.$notify('Successfully signed up!');
         }
       } catch (e) {
         this.errors = e.response.data.errors;
       } finally {
-        this.isLoading = false;
+        this.$store.commit('loading/TOGGLE_LOADING');
       }
     },
   },
