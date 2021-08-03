@@ -40,7 +40,7 @@
         class="mt-8"
         :disabled="invalid || email.taken"
         :loading="isLoading"
-        >Sign Up</ui-button
+        >Next</ui-button
       >
 
       <p class="mt-4">

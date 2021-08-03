@@ -13,16 +13,22 @@
       @input="searchDebounced"
     />
 
-    <div class="search__results" v-show="q && q.length">
-      <section class="search__podcast-results">
-        <h2 class="h2">Podcasts</h2>
-        <podcast-search-results :podcasts="podcasts" />
-      </section>
+    <div class="search__loading" v-show="isSearching">
+      <loading-spinner />
+    </div>
 
-      <section class="search__category-results">
-        <h2 class="h2">Categories</h2>
-        <category-search-results :categories="categories" />
-      </section>
+    <div v-show="!isSearching">
+      <div class="search__results" v-show="q && q.length">
+        <section class="search__podcast-results">
+          <h2 class="h2">Podcasts</h2>
+          <podcast-search-results :podcasts="podcasts" />
+        </section>
+
+        <section class="search__category-results">
+          <h2 class="h2">Categories</h2>
+          <category-search-results :categories="categories" />
+        </section>
+      </div>
     </div>
   </div>
 </template>
@@ -35,6 +41,7 @@ export default {
       podcasts: [],
       categories: [],
       debounce: null,
+      isSearching: false,
     };
   },
   async fetch() {
@@ -42,12 +49,15 @@ export default {
   },
   methods: {
     async search() {
+      this.isSearching = true;
       try {
         const { podcasts, categories } = await this.$api.search(this.q);
         this.podcasts = podcasts;
         this.categories = categories;
       } catch (e) {
         console.error(e.message);
+      } finally {
+        this.isSearching = false;
       }
     },
     searchDebounced() {
@@ -75,6 +85,10 @@ export default {
 <style scoped>
 .search__results {
   @apply md:grid md:grid-cols-3 gap-8;
+}
+
+.search__loading {
+  @apply flex justify-center text-accent;
 }
 
 .search__podcast-results {

@@ -103,8 +103,24 @@ export default function ({ $axios, $config, $auth, $storage }, inject) {
       });
     }
 
+    likeEpisode(episodeId) {
+      return this.client.$post('likes/like', {
+        episodeId,
+      });
+    }
+
+    unlikeEpisode(episodeId) {
+      return this.client.$delete('likes/unlike', {
+        data: { episodeId },
+      });
+    }
+
     getRecentEpisodes() {
       return this.client.$get('user/recent-episodes');
+    }
+
+    getLikedEpisodes() {
+      return this.client.$get('user/liked');
     }
 
     getSubscribedPodcasts() {

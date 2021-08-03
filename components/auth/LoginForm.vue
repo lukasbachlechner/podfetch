@@ -35,9 +35,7 @@
       >
       <p class="mt-4">
         First time here?
-        <nuxt-link to="/signup" class="text-accent"
-          >Create an account</nuxt-link
-        >
+        <nuxt-link to="/signup" class="text-accent">Sign up instead</nuxt-link>
       </p>
     </validation-observer>
   </client-only>
@@ -67,6 +65,7 @@ export default {
         this.$api.setToken();
 
         await this.$store.dispatch('player/getLastPlayedEpisode');
+        this.$store.commit('usermeta/INIT_USER_DATA');
       } catch (e) {
         this.errors = e.response.data.errors;
       } finally {

@@ -35,4 +35,8 @@ export default {
 .auth__section {
   @apply w-full max-w-xl mb-52 mx-auto;
 }
+
+#modal:target {
+  @apply block;
+}
 </style>

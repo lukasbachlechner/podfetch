@@ -1,6 +1,6 @@
 <template>
   <ul class="nav__list">
-    <nav-item v-for="(item, i) in navItems" :key="i" :item="item" />
+    <nav-item v-for="(item, i) in guardedNavItems" :key="i" :item="item" />
   </ul>
 </template>
 
@@ -12,6 +12,7 @@ export default {
         title: 'Home',
         icon: 'house',
         link: '/',
+        public: true,
       },
       {
         title: 'Listen Later',
@@ -27,11 +28,13 @@ export default {
         title: 'Categories',
         icon: 'grid',
         link: '/categories',
+        public: true,
       },
       {
         title: 'Search',
         icon: 'search',
         link: '/search',
+        public: true,
       },
       {
         title: 'Settings',
@@ -40,6 +43,16 @@ export default {
       },
     ],
   }),
+  computed: {
+    guardedNavItems() {
+      return this.navItems.filter((item) => {
+        if (item.public || (!item.public && this.$auth.loggedIn)) {
+          return item;
+        }
+        return false;
+      });
+    },
+  },
 };
 </script>
 

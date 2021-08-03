@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-header title="Create Your Account" />
+    <page-header title="Sign up" />
     <section class="auth__section" v-if="step === 1">
       <div>
         <p class="muted">
@@ -21,6 +21,8 @@
 
 <script>
 export default {
+  middleware: 'auth',
+  auth: 'guest',
   data: () => ({
     step: 1,
     form: null,

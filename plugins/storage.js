@@ -25,7 +25,7 @@ export default function ({ $localForage, $formatter, $api, app }, inject) {
     }
 
     async setEpisode(episode, blob) {
-      console.log(blob);
+      episode.blobSize = blob.size;
       const episodeDataResult = await this.client.savedEpisodeData.setItem(
         episode.id.toString(),
         episode
@@ -94,7 +94,24 @@ export default function ({ $localForage, $formatter, $api, app }, inject) {
       await this.client.savedEpisodeData.removeItem(episodeId.toString());
       await this.client.savedAudioFiles.removeItem(episodeId.toString());
     }
+
+    async clearStorage() {
+      const episodeDataCleared = await this.client.savedEpisodeData.clear();
+      const audioFilesCleared = await this.client.savedAudioFiles.clear();
+
+      app.store.commit('downloader/CLEAR_DOWNLOADED_EPISODES');
+      if (
+        app.store.getters['player/currentEpisode']?.audioUrl?.startsWith(
+          'blob:'
+        )
+      ) {
+        app.store.commit('player/SET_EPISODE', null);
+      }
+
+      return episodeDataCleared && audioFilesCleared;
+    }
   }
+
   const storageClient = new StorageClient();
   inject('storage', storageClient);
 }

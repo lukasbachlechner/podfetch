@@ -9,8 +9,12 @@ export const mutations = {
 };
 
 export const actions = {
-  async nuxtServerInit({ dispatch }) {
+  async nuxtServerInit({ dispatch, commit }) {
     await dispatch('getCategories');
+
+    if (this.$auth.loggedIn && this.$auth.user) {
+      commit('usermeta/INIT_USER_DATA');
+    }
   },
   async getCategories({ commit }) {
     try {

@@ -21,14 +21,10 @@
         </div>
       </header>
       <div class="episode__actions">
-        <ui-button @click="playEpisode">Play Episode</ui-button>
-        <ui-button
-          @click="downloadEpisode"
-          type="outline"
-          class="ml-2"
-          icon="download"
-          >Download</ui-button
-        >
+        <button class="episode__play-button" @click="playEpisode">
+          <ui-icon name="play-fill" size="32" class="ml-1" />
+        </button>
+        <episode-actions :episode="episode" class="ml-4" />
       </div>
 
       <section class="episode__content">
@@ -97,7 +93,7 @@ export default {
 }
 
 .episode__actions {
-  @apply flex;
+  @apply flex items-center;
 }
 
 .episode__content {
@@ -110,5 +106,9 @@ export default {
 
 .episode__content >>> a {
   @apply underline;
+}
+
+.episode__play-button {
+  @apply w-16 h-16 rounded-full bg-gradient-to-tr from-accent to-accent-middle;
 }
 </style>

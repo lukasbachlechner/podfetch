@@ -6,18 +6,26 @@
       <div v-if="$auth.loggedIn">
         <p>You are currently logged in as {{ $auth.user.email }}.</p>
 
-        <ui-button @click="$auth.logout()" type="outline">Logout</ui-button>
+        <ui-button @click="$auth.logout()" type="outline" class="mt-4"
+          >Logout</ui-button
+        >
       </div>
       <div v-else>
         <p>You are currently logged out.</p>
-        <ui-button type="outline" tag="nuxt-link" to="/login">Login</ui-button>
+        <ui-button type="outline" tag="nuxt-link" to="/login" class="mt-4"
+          >Login</ui-button
+        >
       </div>
     </section>
 
     <section class="settings__section">
       <h2 class="h2">Storage</h2>
       <storage-info />
-      <ui-button type="outline" icon="trash"
+      <ui-button
+        type="outline"
+        icon="trash"
+        @click="handleStorageClear"
+        class="mt-4"
         >Delete all local episodes</ui-button
       >
     </section>
@@ -25,7 +33,16 @@
 </template>
 
 <script>
-export default {};
+export default {
+  middleware: 'auth',
+  methods: {
+    async handleStorageClear() {
+      await this.$storage.clearStorage();
+      await this.$store.dispatch('downloader/getStorageEstimate');
+      this.$notify('Storage cleared!');
+    },
+  },
+};
 </script>
 
 <style scoped>

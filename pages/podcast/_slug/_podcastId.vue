@@ -68,6 +68,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   data: () => ({
     podcast: {},
@@ -89,6 +91,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      isPodcastSubscribed: 'usermeta/isPodcastSubscribed',
+    }),
     episodesWithPodcastTitle() {
       return this.podcast.episodes?.map((episode) => {
         episode.podcastTitle = episode.podcastTitle ?? this.podcast.title;
@@ -96,12 +101,7 @@ export default {
       });
     },
     isSubscribed() {
-      return (
-        this.$auth.user.subscribedPodcasts.findIndex(
-          (subscription) =>
-            subscription.podcast_id === this.$route.params.podcastId
-        ) !== -1
-      );
+      return this.isPodcastSubscribed(this.podcast.id);
     },
   },
   methods: {
@@ -126,14 +126,8 @@ export default {
         const subscription = await this.$api.subscribeToPodcast(
           this.$route.params.podcastId
         );
-        const newSubscriptions = [
-          ...this.$auth.user.subscribedPodcasts,
-          subscription,
-        ];
-        this.$auth.setUser({
-          ...this.$auth.user,
-          subscribedPodcasts: newSubscriptions,
-        });
+
+        this.$store.commit('usermeta/SET_SUBSCRIBED_PODCAST', subscription);
         this.$notify(`Subscribed to "${this.podcast.title}".`);
       } catch (e) {
         console.error(e.message);
@@ -142,16 +136,10 @@ export default {
     async handleUnsubscribe() {
       try {
         await this.$api.unsubscribeFromPodcast(this.$route.params.podcastId);
-        const newSubscriptions = [...this.$auth.user.subscribedPodcasts];
-        const subscriptionIndex = newSubscriptions.findIndex(
-          (subscription) =>
-            subscription.podcast_id === this.$route.params.podcastId
+        this.$store.commit(
+          'usermeta/REMOVE_SUBSCRIBED_PODCAST',
+          this.podcast.id
         );
-        newSubscriptions.splice(subscriptionIndex, 1);
-        this.$auth.setUser({
-          ...this.$auth.user,
-          subscribedPodcasts: newSubscriptions,
-        });
         this.$notify(`Unsubscribed from "${this.podcast.title}".`);
       } catch (e) {
         console.error(e.message);

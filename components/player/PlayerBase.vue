@@ -1,9 +1,9 @@
 <template>
   <div>
     <aside
+      v-if="currentEpisode"
       class="player__wrapper"
       :class="{ 'player--open': playerOpen }"
-      v-if="currentEpisode"
     >
       <div class="player__header">
         <p class="player__header-text">Now playing</p>
@@ -14,7 +14,7 @@
         </div>
       </div>
       <div class="player__image">
-        <ui-image :src="currentEpisode.image" v-show="!isEpisodeLoading" />
+        <ui-image v-show="!isEpisodeLoading" :src="currentEpisode.image" />
         <loading-spinner v-show="isEpisodeLoading" />
       </div>
       <div class="player__info">
@@ -36,17 +36,17 @@
         @skip-backward="handleSkipBackward"
       />
       <player-track
+        ref="playerTrack"
         :max="duration"
         @track-input="handleRangeInput"
         @track-change="handleRangeChange"
-        ref="playerTrack"
       />
       <player-actions />
 
       <audio
+        ref="player"
         :src="currentEpisode.audioUrl"
         :type="currentEpisode.audioType"
-        ref="player"
         class="hidden"
         @loadedmetadata="displayMetadata"
         @loadeddata="handleAudioLoaded"
@@ -54,7 +54,7 @@
         @stalled="handleStalled"
       ></audio>
 
-      <button @click="openPlayer" class="player__open-button">
+      <button class="player__open-button" @click="openPlayer">
         <span class="sr-only">Open Player</span>
       </button>
     </aside>
@@ -99,6 +99,13 @@ export default {
       );
     },
   },
+  watch: {
+    currentEpisode(newEpisode) {
+      if (newEpisode === null) {
+        this.stopInterval();
+      }
+    },
+  },
   async mounted() {
     await this.$store.dispatch('player/getLastPlayedEpisode');
 
@@ -112,8 +119,27 @@ export default {
         player.autoplay = true;
       }
     });
+
+    window.addEventListener('keydown', (e) => this.handleKeyPress(e), false);
+  },
+  destroyed() {
+    window.removeEventListener('keydown', (e) => this.handleKeyPress(e), false);
   },
   methods: {
+    handleKeyPress(e) {
+      switch (e.code) {
+        case 'ArrowLeft':
+          this.handleSkipBackward();
+          break;
+        case 'ArrowRight':
+          this.handleSkipForward();
+          break;
+        case 'Space':
+          e.preventDefault();
+          this.toggleAudio();
+          break;
+      }
+    },
     openPlayer() {
       if (!this.playerOpen) {
         this.$store.commit('player/SET_MOBILE_PLAYER', true);
@@ -145,7 +171,7 @@ export default {
     },
     toggleAudio() {
       const { player } = this.$refs;
-      if (player.paused) {
+      if (player?.paused) {
         this.playAudio();
       } else {
         this.pauseAudio();
@@ -207,26 +233,17 @@ export default {
     },
     handleSkipForward() {
       const { player } = this.$refs;
-      const { currentTime } = player;
 
-      this.setCurrentTime(currentTime + 15);
+      this.setCurrentTime(player?.currentTime + 15);
     },
 
     handleSkipBackward() {
       const { player } = this.$refs;
-      const { currentTime } = player;
 
-      this.setCurrentTime(currentTime - 15);
+      this.setCurrentTime(player?.currentTime - 15);
     },
     handleStalled() {
       console.log('playback stalled');
-    },
-  },
-  watch: {
-    currentEpisode(newEpisode) {
-      if (newEpisode === null) {
-        this.stopInterval();
-      }
     },
   },
 };
@@ -252,7 +269,7 @@ export default {
 }
 
 .player__podcast {
-  @apply text-sm opacity-50 whitespace-nowrap overflow-hidden overflow-ellipsis;
+  @apply text-sm opacity-50 whitespace-nowrap overflow-hidden overflow-ellipsis inline-flex;
 }
 
 .player__header {
@@ -265,20 +282,15 @@ export default {
 
 @screen max-md {
   .player--open {
-    @apply fixed top-8 p-8 bottom-0 flex-col gap-0 items-start bg-haiti-high;
+    @apply fixed top-8 p-8 bottom-0 flex-col gap-0 items-start bg-haiti-high rounded-t-2xl;
   }
 
   .player--open .player__open-button {
     @apply hidden;
   }
 
-  .player--open::before {
-    @apply fixed left-0 top-0 w-screen h-8 block bg-haiti bg-opacity-75;
-    content: '';
-  }
-
   .player--open .player__image {
-    @apply w-full h-auto mx-auto mb-4;
+    @apply w-full h-auto mx-auto mb-4 bg-transparent;
   }
 
   .player--open .player__info {
@@ -315,6 +327,22 @@ export default {
 
   .player--open .player__header {
     @apply w-full grid grid-cols-3 items-center mb-4;
+  }
+
+  .player--open >>> .player__actions {
+    @apply flex order-3 mt-12 mx-0 justify-center w-full;
+  }
+
+  .player--open >>> .episode__action-button:first-of-type {
+    @apply ml-0;
+  }
+
+  .player--open >>> .episode__action-button {
+    @apply ml-8;
+  }
+
+  .player--open >>> .episode__action-button svg {
+    @apply h-6 w-6;
   }
 
   .player__header-text {

@@ -7,9 +7,16 @@
         size="48"
         class="episode__image"
       />
-      <h3 class="ellipsis">
-        {{ episode.title }}
-      </h3>
+      <div class="overflow-hidden">
+        <h3 class="ellipsis">
+          {{ episode.title }}
+        </h3>
+        <h4 class="font-normal text-sm muted">
+          {{ episode.podcastTitle }}
+        </h4>
+      </div>
+
+      <episode-actions :episode="episode" />
     </div>
     <p class="episode__description" v-html="episode.excerpt"></p>
     <div class="episode__footer">
@@ -43,7 +50,6 @@ export default {
   },
   methods: {
     playEpisode() {
-      // this.$store.commit('player/SET_EPISODE', this.episode);
       this.$store.dispatch('player/addEpisode', this.episode);
     },
   },
@@ -77,5 +83,9 @@ export default {
 
 .episode__link {
   @apply absolute top-0 left-0 w-full h-full;
+}
+
+.episode__actions {
+  @apply ml-auto z-10;
 }
 </style>

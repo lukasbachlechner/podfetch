@@ -1,11 +1,13 @@
 <template>
-  <ul class="podcast__grid">
-    <podcast-search-result-item
-      v-for="podcast in podcasts"
-      :key="podcast.id"
-      :podcast="podcast"
-    />
-  </ul>
+  <div>
+    <ul class="podcast__grid">
+      <podcast-search-result-item
+        v-for="podcast in podcasts"
+        :key="podcast.id"
+        :podcast="podcast"
+      />
+    </ul>
+  </div>
 </template>
 
 <script>

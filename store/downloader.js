@@ -71,6 +71,10 @@ export const mutations = {
     state.downloadedEpisodes.splice(episodeIndex, 1);
   },
 
+  CLEAR_DOWNLOADED_EPISODES(state) {
+    state.downloadedEpisodes = [];
+  },
+
   SET_STORAGE_ESTIMATE(state, storageEstimate) {
     state.storageEstimate = storageEstimate;
   },

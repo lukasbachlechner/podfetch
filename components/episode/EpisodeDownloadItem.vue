@@ -7,7 +7,7 @@
         size="48"
         class="episode-download__image"
       />
-      <div>
+      <div class="overflow-hidden">
         <h3 class="ellipsis episode-download__episode-title">
           {{ episode.title }}
         </h3>
