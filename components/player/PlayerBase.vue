@@ -45,6 +45,7 @@
 
       <audio
         ref="player"
+        autoplay
         :src="currentEpisode.audioUrl"
         :type="currentEpisode.audioType"
         class="hidden"
@@ -108,17 +109,6 @@ export default {
   },
   async mounted() {
     await this.$store.dispatch('player/getLastPlayedEpisode');
-
-    /**
-     * the audio element has to have autoplay enabled (safari ios issue)
-     * so that the loadeddata-event gets fired when it should.
-     */
-    this.$nextTick(() => {
-      if (this.isIOS) {
-        const { player } = this.$refs;
-        player.autoplay = true;
-      }
-    });
 
     window.addEventListener('keydown', (e) => this.handleKeyPress(e), false);
   },
