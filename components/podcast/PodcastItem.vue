@@ -9,9 +9,7 @@
           class="podcast__image"
           :src="imageUrl"
           :alt="podcast.title"
-          loading="lazy"
-          width="300"
-          height="300"
+          size="300"
         />
       </div>
 

@@ -30,6 +30,9 @@ export default {
       categories: 'allCategories',
     }),
     filteredCategories() {
+      if (!this.searchTerm) {
+        return this.categories;
+      }
       return this.categories?.filter((category) =>
         category.name.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
