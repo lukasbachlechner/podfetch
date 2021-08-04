@@ -48,7 +48,7 @@ export default {
       {
         rel: 'apple-touch-icon',
         type: 'image/png',
-        href: '/apple-touch-icon.png',
+        href: '/apple-touch-app-icon.png',
       },
     ],
   },
@@ -149,10 +149,13 @@ export default {
       name: 'Podfetch',
     },
     meta: {
-      appleStatusBarStyle: 'black-translucent',
+      appleStatusBarStyle: 'black',
       name: 'Podfetch',
       theme_color: '#0C0921',
       nativeUI: true,
+    },
+    icon: {
+      fileName: 'app-icon.png',
     },
   },
 
