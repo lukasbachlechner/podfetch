@@ -146,6 +146,13 @@ export default {
   pwa: {
     manifest: {
       lang: 'en',
+      name: 'Podfetch',
+    },
+    meta: {
+      appleStatusBarStyle: 'black-translucent',
+      name: 'Podfetch',
+      theme_color: '#0C0921',
+      nativeUI: true,
     },
   },
 
