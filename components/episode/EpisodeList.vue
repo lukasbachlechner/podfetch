@@ -1,11 +1,14 @@
 <template>
-  <ul class="episode__list">
-    <episode-item
-      v-for="episode in episodes"
-      :key="episode.id"
-      :episode="episode"
-    />
-  </ul>
+  <div>
+    <p v-if="!episodes.length">No episodes marked for Listen Later.</p>
+    <ul v-else class="episode__list">
+      <episode-item
+        v-for="episode in episodes"
+        :key="episode.id"
+        :episode="episode"
+      />
+    </ul>
+  </div>
 </template>
 
 <script>

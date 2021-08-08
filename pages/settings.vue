@@ -6,7 +6,7 @@
       <div v-if="$auth.loggedIn">
         <p>You are currently logged in as {{ $auth.user.email }}.</p>
 
-        <ui-button @click="$auth.logout()" type="outline" class="mt-4"
+        <ui-button @click="handleLogout" type="outline" class="mt-4"
           >Logout</ui-button
         >
       </div>
@@ -40,6 +40,11 @@ export default {
       await this.$storage.clearStorage();
       await this.$store.dispatch('downloader/getStorageEstimate');
       this.$notify('Storage cleared!');
+    },
+    async handleLogout() {
+      await this.$auth.logout();
+      this.$notify('You are logged out.');
+      await this.$store.dispatch('player/getLastPlayedEpisode');
     },
   },
 };

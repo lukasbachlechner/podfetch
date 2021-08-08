@@ -2,6 +2,20 @@
   <div>
     <page-header title="Home" />
 
+    <section class="section section--cta" v-if="!$auth.loggedIn">
+      <h2 class="h2">You're missing out!</h2>
+      <p>
+        Create your account now to explore all functions of Podfetch, including
+        offline storage, subscriptions, and much more!
+      </p>
+      <div class="flex items-center mt-8">
+        <ui-button tag="nuxt-link" to="/signup">Sign Up</ui-button>
+        <ui-button tag="nuxt-link" type="outline" to="/login" class="ml-4"
+          >Login</ui-button
+        >
+      </div>
+    </section>
+
     <section class="section" v-if="$auth.loggedIn && recentEpisodes.length">
       <h2 class="h2">Recents</h2>
       <episode-recent-list :episodes="recentEpisodes" />
@@ -42,7 +56,7 @@ export default {
           recentEpisodes,
           subscribedPodcasts,
         ] = await Promise.all([
-          this.$api.getTrending({ max: 8 }),
+          this.$api.getTrending({ max: 8, cat: 'news, true crime, daily' }),
           this.$api.getPersonalized({
             max: 8,
           }),
@@ -55,7 +69,10 @@ export default {
         this.recentEpisodes = recentEpisodes;
         this.subscribedPodcasts = subscribedPodcasts;
       } else {
-        this.trendingPodcasts = await this.$api.getTrending({ max: 8 });
+        this.trendingPodcasts = await this.$api.getTrending({
+          max: 8,
+          cat: 'news, true crime, daily',
+        });
       }
     } catch (e) {
       console.error(e.message);
@@ -66,4 +83,9 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.section--cta {
+  @apply bg-haiti-middle p-8 rounded;
+  @apply md:mr-8;
+}
+</style>

@@ -83,7 +83,7 @@ export default {
 
 .podcast__item:first-of-type .podcast__title {
   @apply text-xl font-bold leading-normal;
-  @apply md:text-2xl;
-  @apply lg:text-3xl;
+  @apply md:text-2xl md:leading-relaxed;
+  @apply lg:text-3xl lg:leading-relaxed;
 }
 </style>

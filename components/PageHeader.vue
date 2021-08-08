@@ -15,6 +15,7 @@
 
     <div>
       <nuxt-link to="/login" v-if="!$auth.loggedIn">Login</nuxt-link>
+      <nuxt-link v-else to="/settings">{{ $auth.user.email }}</nuxt-link>
     </div>
   </div>
 </template>

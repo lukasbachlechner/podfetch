@@ -45,7 +45,7 @@
 
       <audio
         ref="player"
-        autoplay
+        :autoplay="isSafariIOS"
         :src="currentEpisode.audioUrl"
         :type="currentEpisode.audioType"
         class="hidden"
@@ -79,25 +79,10 @@ export default {
       lastPlaybackTime: 'player/lastPlaybackTime',
       isEpisodeDownloaded: 'downloader/isEpisodeDownloaded',
       isEpisodeLoading: 'player/episodeLoading',
+      isSafariIOS: 'isSafariIOS',
     }),
     isCurrentEpisodeDownloaded() {
       return this.isEpisodeDownloaded(this.currentEpisode.id);
-    },
-    isIOS() {
-      // detect if the device is a mobile iOS device
-      // https://stackoverflow.com/questions/9038625/detect-if-device-is-ios
-      return (
-        [
-          'iPad Simulator',
-          'iPhone Simulator',
-          'iPod Simulator',
-          'iPad',
-          'iPhone',
-          'iPod',
-        ].includes(navigator.platform) ||
-        // iPad on iOS 13 detection
-        (navigator.userAgent.includes('Mac') && 'ontouchend' in document)
-      );
     },
   },
   watch: {
@@ -109,27 +94,8 @@ export default {
   },
   async mounted() {
     await this.$store.dispatch('player/getLastPlayedEpisode');
-
-    window.addEventListener('keydown', (e) => this.handleKeyPress(e), false);
-  },
-  destroyed() {
-    window.removeEventListener('keydown', (e) => this.handleKeyPress(e), false);
   },
   methods: {
-    handleKeyPress(e) {
-      switch (e.code) {
-        case 'ArrowLeft':
-          this.handleSkipBackward();
-          break;
-        case 'ArrowRight':
-          this.handleSkipForward();
-          break;
-        case 'Space':
-          e.preventDefault();
-          this.toggleAudio();
-          break;
-      }
-    },
     openPlayer() {
       if (!this.playerOpen) {
         this.$store.commit('player/SET_MOBILE_PLAYER', true);
@@ -259,7 +225,7 @@ export default {
 }
 
 .player__podcast {
-  @apply text-sm opacity-50 whitespace-nowrap overflow-hidden overflow-ellipsis inline-flex;
+  @apply text-sm opacity-50 whitespace-nowrap overflow-hidden overflow-ellipsis inline-block;
 }
 
 .player__header {

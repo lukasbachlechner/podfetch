@@ -1,10 +1,14 @@
 export const state = () => ({
   categories: [],
+  isSafariIOS: false,
 });
 
 export const mutations = {
   SET_CATEGORIES(state, categories) {
     state.categories = categories;
+  },
+  SET_IOS(state, payload) {
+    state.isSafariIOS = payload;
   },
 };
 
@@ -30,4 +34,5 @@ export const getters = {
   allCategories: (state) => state.categories,
   categoryBySlug: (state) => (slug) =>
     state.categories.find((category) => category.slug === slug),
+  isSafariIOS: (state) => state.isSafariIOS,
 };

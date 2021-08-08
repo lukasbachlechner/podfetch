@@ -1,12 +1,13 @@
 <template>
   <div>
-    <ul class="podcast__grid">
+    <ul v-if="podcasts.length" class="podcast__grid">
       <podcast-search-result-item
         v-for="podcast in podcasts"
         :key="podcast.id"
         :podcast="podcast"
       />
     </ul>
+    <p v-else>No categories found.</p>
   </div>
 </template>
 

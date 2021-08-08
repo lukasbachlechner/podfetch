@@ -159,6 +159,10 @@ export default {
     },
   },
 
+  router: {
+    middleware: ['user-agent'],
+  },
+
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
 };

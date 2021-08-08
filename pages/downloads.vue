@@ -13,7 +13,8 @@
         <storage-info />
       </div>
 
-      <episode-local-list :episodes="downloadedEpisodes" />
+      <p v-if="!downloadedEpisodes.length">No downloaded episodes found.</p>
+      <episode-local-list v-else :episodes="downloadedEpisodes" />
     </section>
   </div>
 </template>
